@@ -1,0 +1,282 @@
+# JavaScript SDK
+
+microCMS JavaScript SDKは、microCMSのAPIと簡単にやり取りするためのライブラリです。
+
+## インストール
+
+```bash
+npm install microcms-js-sdk
+```
+
+## 基本的な使い方
+
+### クライアントの初期化
+
+```javascript
+import { createClient } from 'microcms-js-sdk';
+
+const client = createClient({
+  serviceDomain: 'your-service-id',
+  apiKey: 'your-api-key',
+});
+```
+
+### コンテンツ一覧の取得
+
+```javascript
+// ブログ記事をすべて取得
+const posts = await client.get({
+  endpoint: 'blog',
+});
+
+console.log(posts.contents);
+```
+
+### 特定のコンテンツの取得
+
+```javascript
+// 特定のブログ記事を取得
+const post = await client.get({
+  endpoint: 'blog',
+  contentId: 'my-first-post',
+});
+
+console.log(post.title);
+```
+
+### 高度なクエリ
+
+```javascript
+// クエリパラメータを使用して記事を取得
+const posts = await client.get({
+  endpoint: 'blog',
+  queries: {
+    limit: 5,
+    orders: '-publishedAt',
+    q: '検索キーワード',
+    fields: 'title,body,publishedAt',
+    depth: 2,
+  },
+});
+```
+
+## TypeScriptサポート
+
+SDKは完全なTypeScriptサポートを提供します：
+
+```typescript
+interface BlogPost {
+  id: string;
+  title: string;
+  body: string;
+  publishedAt: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+const posts = await client.get<BlogPost>({
+  endpoint: 'blog',
+});
+```
+
+## エラーハンドリング
+
+```javascript
+try {
+  const posts = await client.get({
+    endpoint: 'blog',
+  });
+} catch (error) {
+  console.error('Error:', error.message);
+}
+```
+
+## 書き込み操作（Management API）
+
+書き込み操作には、Management APIを使用します：
+
+```javascript
+// コンテンツの作成
+const newPost = await client.create({
+  endpoint: 'blog',
+  content: {
+    title: '新しい記事',
+    body: 'これは記事の内容です',
+  },
+});
+
+// コンテンツの更新
+const updatedPost = await client.update({
+  endpoint: 'blog',
+  contentId: 'post-id',
+  content: {
+    title: '更新されたタイトル',
+  },
+});
+
+// コンテンツの削除
+await client.delete({
+  endpoint: 'blog',
+  contentId: 'post-id',
+});
+```
+
+## 実装例
+
+### Reactコンポーネント
+
+```jsx
+import { useEffect, useState } from 'react';
+import { createClient } from 'microcms-js-sdk';
+
+const client = createClient({
+  serviceDomain: 'your-service-id',
+  apiKey: 'your-api-key',
+});
+
+function BlogList() {
+  const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        const data = await client.get({
+          endpoint: 'blog',
+          queries: {
+            limit: 10,
+            orders: '-publishedAt',
+          },
+        });
+        setPosts(data.contents);
+      } catch (error) {
+        console.error('Error fetching posts:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPosts();
+  }, []);
+
+  if (loading) return <div>読み込み中...</div>;
+
+  return (
+    <div>
+      {posts.map((post) => (
+        <article key={post.id}>
+          <h2>{post.title}</h2>
+          <p>{post.body}</p>
+          <small>公開日: {new Date(post.publishedAt).toLocaleDateString()}</small>
+        </article>
+      ))}
+    </div>
+  );
+}
+```
+
+### Next.js API Route
+
+```javascript
+// pages/api/posts.js
+import { createClient } from 'microcms-js-sdk';
+
+const client = createClient({
+  serviceDomain: process.env.MICROCMS_SERVICE_DOMAIN,
+  apiKey: process.env.MICROCMS_API_KEY,
+});
+
+export default async function handler(req, res) {
+  try {
+    const posts = await client.get({
+      endpoint: 'blog',
+      queries: {
+        limit: 10,
+        orders: '-publishedAt',
+      },
+    });
+    res.status(200).json(posts);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+}
+```
+
+### Vue.jsコンポーネント
+
+```vue
+<template>
+  <div>
+    <div v-if="loading">読み込み中...</div>
+    <div v-else>
+      <article v-for="post in posts" :key="post.id">
+        <h2>{{ post.title }}</h2>
+        <p>{{ post.body }}</p>
+        <small>公開日: {{ formatDate(post.publishedAt) }}</small>
+      </article>
+    </div>
+  </div>
+</template>
+
+<script>
+import { createClient } from 'microcms-js-sdk';
+
+const client = createClient({
+  serviceDomain: 'your-service-id',
+  apiKey: 'your-api-key',
+});
+
+export default {
+  data() {
+    return {
+      posts: [],
+      loading: true,
+    };
+  },
+  async mounted() {
+    try {
+      const data = await client.get({
+        endpoint: 'blog',
+        queries: {
+          limit: 10,
+          orders: '-publishedAt',
+        },
+      });
+      this.posts = data.contents;
+    } catch (error) {
+      console.error('Error fetching posts:', error);
+    } finally {
+      this.loading = false;
+    }
+  },
+  methods: {
+    formatDate(dateString) {
+      return new Date(dateString).toLocaleDateString();
+    },
+  },
+};
+</script>
+```
+
+## 環境変数の設定
+
+セキュリティのため、APIキーは環境変数で管理することを推奨します：
+
+```bash
+# .env.local
+MICROCMS_SERVICE_DOMAIN=your-service-id
+MICROCMS_API_KEY=your-api-key
+```
+
+```javascript
+const client = createClient({
+  serviceDomain: process.env.MICROCMS_SERVICE_DOMAIN,
+  apiKey: process.env.MICROCMS_API_KEY,
+});
+```
+
+## 参考リンク
+
+- [公式ドキュメント](https://document.microcms.io/sdk/javascript)
+- [GitHubリポジトリ](https://github.com/microcmsio/microcms-js-sdk)
+- [npmパッケージ](https://www.npmjs.com/package/microcms-js-sdk)

@@ -1,0 +1,307 @@
+# Next.js チュートリアル
+
+Next.jsとmicroCMSを連携させて、動的なWebサイトを構築する方法を説明します。
+
+## 前提条件
+
+- Node.js 18.0.0以上
+- microCMSアカウント
+- Next.jsの基本的な知識
+
+## セットアップ
+
+### 1. Next.jsプロジェクトの作成
+
+```bash
+npx create-next-app@latest my-microcms-blog
+cd my-microcms-blog
+```
+
+### 2. microCMS JavaScript SDKのインストール
+
+```bash
+npm install microcms-js-sdk
+```
+
+### 3. 環境変数の設定
+
+`.env.local`ファイルを作成：
+
+```bash
+MICROCMS_SERVICE_DOMAIN=your-service-id
+MICROCMS_API_KEY=your-api-key
+```
+
+## 基本的な実装
+
+### 1. microCMSクライアントの設定
+
+`lib/microcms.ts`を作成：
+
+```typescript
+import { createClient } from 'microcms-js-sdk';
+
+export const client = createClient({
+  serviceDomain: process.env.MICROCMS_SERVICE_DOMAIN!,
+  apiKey: process.env.MICROCMS_API_KEY!,
+});
+```
+
+### 2. ブログ一覧ページの作成
+
+`pages/index.tsx`を更新：
+
+```tsx
+import { GetStaticProps } from 'next';
+import { client } from '../lib/microcms';
+
+interface BlogPost {
+  id: string;
+  title: string;
+  body: string;
+  publishedAt: string;
+}
+
+interface HomeProps {
+  posts: BlogPost[];
+}
+
+export default function Home({ posts }: HomeProps) {
+  return (
+    <div>
+      <h1>ブログ一覧</h1>
+      {posts.map((post) => (
+        <article key={post.id}>
+          <h2>{post.title}</h2>
+          <p>{post.body}</p>
+          <small>{new Date(post.publishedAt).toLocaleDateString()}</small>
+        </article>
+      ))}
+    </div>
+  );
+}
+
+export const getStaticProps: GetStaticProps = async () => {
+  const data = await client.get({
+    endpoint: 'blog',
+    queries: {
+      limit: 10,
+      orders: '-publishedAt',
+    },
+  });
+
+  return {
+    props: {
+      posts: data.contents,
+    },
+    revalidate: 60, // ISR
+  };
+};
+```
+
+### 3. ブログ詳細ページの作成
+
+`pages/blog/[id].tsx`を作成：
+
+```tsx
+import { GetStaticProps, GetStaticPaths } from 'next';
+import { client } from '../../lib/microcms';
+
+interface BlogPost {
+  id: string;
+  title: string;
+  body: string;
+  publishedAt: string;
+}
+
+interface BlogDetailProps {
+  post: BlogPost;
+}
+
+export default function BlogDetail({ post }: BlogDetailProps) {
+  return (
+    <div>
+      <h1>{post.title}</h1>
+      <div dangerouslySetInnerHTML={{ __html: post.body }} />
+      <small>{new Date(post.publishedAt).toLocaleDateString()}</small>
+    </div>
+  );
+}
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  const data = await client.get({
+    endpoint: 'blog',
+  });
+
+  const paths = data.contents.map((post: BlogPost) => ({
+    params: { id: post.id },
+  }));
+
+  return {
+    paths,
+    fallback: 'blocking',
+  };
+};
+
+export const getStaticProps: GetStaticProps = async ({ params }) => {
+  const post = await client.get({
+    endpoint: 'blog',
+    contentId: params!.id as string,
+  });
+
+  return {
+    props: {
+      post,
+    },
+    revalidate: 60,
+  };
+};
+```
+
+## App Routerでの実装
+
+### 1. ブログ一覧ページ
+
+`app/page.tsx`を作成：
+
+```tsx
+import { client } from '../lib/microcms';
+
+interface BlogPost {
+  id: string;
+  title: string;
+  body: string;
+  publishedAt: string;
+}
+
+async function getPosts(): Promise<BlogPost[]> {
+  const data = await client.get({
+    endpoint: 'blog',
+    queries: {
+      limit: 10,
+      orders: '-publishedAt',
+    },
+  });
+  return data.contents;
+}
+
+export default async function Home() {
+  const posts = await getPosts();
+
+  return (
+    <div>
+      <h1>ブログ一覧</h1>
+      {posts.map((post) => (
+        <article key={post.id}>
+          <h2>{post.title}</h2>
+          <p>{post.body}</p>
+          <small>{new Date(post.publishedAt).toLocaleDateString()}</small>
+        </article>
+      ))}
+    </div>
+  );
+}
+```
+
+### 2. ブログ詳細ページ
+
+`app/blog/[id]/page.tsx`を作成：
+
+```tsx
+import { client } from '../../../lib/microcms';
+
+interface BlogPost {
+  id: string;
+  title: string;
+  body: string;
+  publishedAt: string;
+}
+
+async function getPost(id: string): Promise<BlogPost> {
+  const post = await client.get({
+    endpoint: 'blog',
+    contentId: id,
+  });
+  return post;
+}
+
+export default async function BlogDetail({ params }: { params: { id: string } }) {
+  const post = await getPost(params.id);
+
+  return (
+    <div>
+      <h1>{post.title}</h1>
+      <div dangerouslySetInnerHTML={{ __html: post.body }} />
+      <small>{new Date(post.publishedAt).toLocaleDateString()}</small>
+    </div>
+  );
+}
+```
+
+## 高度な機能
+
+### 1. 検索機能
+
+```tsx
+import { useState } from 'react';
+
+export default function SearchForm() {
+  const [query, setQuery] = useState('');
+
+  const handleSearch = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const data = await client.get({
+      endpoint: 'blog',
+      queries: {
+        q: query,
+      },
+    });
+    // 検索結果の処理
+  };
+
+  return (
+    <form onSubmit={handleSearch}>
+      <input
+        type="text"
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+        placeholder="検索キーワード"
+      />
+      <button type="submit">検索</button>
+    </form>
+  );
+}
+```
+
+### 2. ページネーション
+
+```tsx
+export const getStaticProps: GetStaticProps = async ({ query }) => {
+  const page = Number(query.page) || 1;
+  const limit = 10;
+  const offset = (page - 1) * limit;
+
+  const data = await client.get({
+    endpoint: 'blog',
+    queries: {
+      limit,
+      offset,
+      orders: '-publishedAt',
+    },
+  });
+
+  return {
+    props: {
+      posts: data.contents,
+      totalCount: data.totalCount,
+      currentPage: page,
+    },
+  };
+};
+```
+
+## 参考リンク
+
+- [Next.js公式ドキュメント](https://nextjs.org/docs)
+- [microCMS Next.jsチュートリアル](https://document.microcms.io/tutorial/nextjs)
+- [microCMS JavaScript SDK](https://document.microcms.io/sdk/javascript)

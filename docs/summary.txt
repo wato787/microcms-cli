@@ -1,0 +1,59 @@
+# microCMS Documentation
+
+microCMS CLIへようこそ！このツールはmicroCMSの公式ドキュメントに素早くアクセスできます。
+
+## 利用可能なドキュメント
+
+### API リファレンス
+- `/docs/api/content` - Content API ドキュメント
+- `/docs/api/management` - Management API ドキュメント
+
+### はじめに
+- `/docs/getting-started/installation` - microCMS の始め方
+
+### SDK ドキュメント
+- `/docs/sdk/javascript` - JavaScript SDK ドキュメント
+
+## 使用方法
+
+```bash
+# このサマリーを表示
+microcms docs
+
+# 特定のドキュメントを表示
+microcms docs /docs/api/content
+microcms docs /docs/getting-started/installation
+microcms docs /docs/sdk/javascript
+```
+
+## microCMS について
+
+microCMSはAPIベースの日本製ヘッドレスCMSです。以下の特徴があります：
+
+- **APIファースト**: RESTful APIでデータにアクセス
+- **ヘッドレス**: フロントエンドとバックエンドを分離
+- **日本製**: 日本語でのサポートとドキュメント
+- **簡単**: 直感的な管理画面でコンテンツ管理
+
+## 主な機能
+
+- ✅ オフライン ドキュメントアクセス
+- ✅ 高速で軽量
+- ✅ AIフレンドリーな出力形式
+- ✅ 認証不要
+- ✅ 公式ドキュメントベース
+- ✅ 日本語対応
+
+## 次のステップ
+
+1. **はじめに**: `/docs/getting-started/installation` でmicroCMSの基本を学ぶ
+2. **API**: `/docs/api/content` でContent APIの使い方を確認
+3. **SDK**: `/docs/sdk/javascript` でJavaScript SDKを試す
+4. **管理**: `/docs/api/management` でManagement APIを探索
+
+## 参考リンク
+
+- [microCMS公式サイト](https://microcms.io/)
+- [公式ドキュメント](https://document.microcms.io/)
+- [料金プラン](https://microcms.io/pricing)
+- [サポート](https://help.microcms.io/)

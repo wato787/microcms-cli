@@ -1,0 +1,114 @@
+# microCMS はじめに
+
+microCMSはAPIベースの日本製ヘッドレスCMSです。ヘッドレスCMSについてはこちらの記事をご参考ください。
+
+## microCMSの始め方
+
+microCMSを使い始めるには、まず以下の手順を実施しましょう。
+
+### 1. アカウント登録
+
+1. [microCMS](https://microcms.io/)にアクセス
+2. 「無料で始める」をクリック
+3. 必要事項を入力してアカウントを作成
+
+### 2. ログイン
+
+作成したアカウントでログインします。
+
+### 3. サービスの作成
+
+1. 管理画面で「サービスを作成」をクリック
+2. サービス名を入力
+3. サービスを作成
+
+## 基本的な使い方
+
+### APIの作成
+
+1. 管理画面で「APIを作成」をクリック
+2. API名を入力（例: blog）
+3. APIの形式を選択（リスト形式またはオブジェクト形式）
+4. フィールドを設定
+
+### コンテンツの作成
+
+1. 作成したAPIをクリック
+2. 「新規作成」をクリック
+3. フィールドに内容を入力
+4. 「公開」をクリック
+
+### APIでのデータ取得
+
+作成したコンテンツは以下のようにAPIで取得できます：
+
+```bash
+curl -H "X-MICROCMS-API-KEY: {your-api-key}" \
+  "https://{service-id}.microcms.io/api/v1/blog"
+```
+
+## ブラウザからJavaScriptでデータを取得
+
+一番理解しやすい方法として、ブラウザからJavaScriptでデータを取得する方法をお試しください。
+
+### HTMLファイルの作成
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>microCMS Sample</title>
+</head>
+<body>
+    <div id="content"></div>
+    
+    <script>
+        // APIキーとサービスIDを設定
+        const API_KEY = 'your-api-key';
+        const SERVICE_ID = 'your-service-id';
+        
+        // コンテンツを取得
+        fetch(`https://${SERVICE_ID}.microcms.io/api/v1/blog`, {
+            headers: {
+                'X-MICROCMS-API-KEY': API_KEY
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            // コンテンツを表示
+            const contentDiv = document.getElementById('content');
+            data.contents.forEach(post => {
+                const postElement = document.createElement('div');
+                postElement.innerHTML = `
+                    <h2>${post.title}</h2>
+                    <p>${post.body}</p>
+                    <small>公開日: ${new Date(post.publishedAt).toLocaleDateString()}</small>
+                `;
+                contentDiv.appendChild(postElement);
+            });
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    </script>
+</body>
+</html>
+```
+
+## 管理画面のURL
+
+- **管理画面トップ**: https://{サービスID}.microcms.io
+- **コンテンツ**: https://{サービスID}.microcms.io/apis/{API_ID}/{コンテンツID}
+
+## 次のステップ
+
+- [Content API documentation](/docs/api/content) を読む
+- [Management API](/docs/api/management) について学ぶ
+- [JavaScript SDK](/docs/sdk/javascript) を探索する
+
+## 参考リンク
+
+- [microCMS公式サイト](https://microcms.io/)
+- [公式ドキュメント](https://document.microcms.io/)
+- [チュートリアル](https://document.microcms.io/tutorial/javascript/javascript-getting-started)
+- [ブログ記事](https://blog.microcms.io/getting-started/)

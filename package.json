@@ -1,0 +1,24 @@
+{
+  "name": "microcms-cli",
+  "version": "0.1.0",
+  "description": "CLI for microCMS documentation",
+  "type": "module",
+  "bin": {
+    "microcms": "./bin"
+  },
+  "scripts": {
+    "build": "bun build ./src/index.ts --outfile=./bin --target=node",
+    "dev": "bun run src/index.ts"
+  },
+  "dependencies": {
+    "commander": "^12.1.0"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@types/node": "^20.11.0",
+    "typescript": "^5.9.3"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
