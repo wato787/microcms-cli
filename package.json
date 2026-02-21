@@ -9,6 +9,7 @@
   "scripts": {
     "build": "bun build ./src/index.ts --outfile=./bin --target=node",
     "dev": "bun run src/index.ts",
+    "test": "bun test",
     "typecheck": "tsgo --noEmit"
   },
   "dependencies": {
