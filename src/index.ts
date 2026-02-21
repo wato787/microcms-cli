@@ -6,7 +6,7 @@ import { genTypesCommand } from './commands/gen-types/index.js';
 const program = new Command();
 
 program
-  .name('microcms')
+  .name('microcms-cli')
   .description('CLI for microCMS')
   .version('0.1.0');
 

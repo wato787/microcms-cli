@@ -1,14 +1,15 @@
 # microCMS CLI
 
-microCMS 用の CLI ツールです。
+microCMS 用の CLI ツールです。実行コマンドは `microcms-cli` です。
 
 - `gen-types`: Management API のスキーマから TypeScript 型を生成
 
-## Setup
+## Install
 
 ```bash
-bun install
-bun run build
+npm install -g @wato787/microcms-cli
+# または
+bun add -g @wato787/microcms-cli
 ```
 
 ## Commands
@@ -27,24 +28,24 @@ microCMS Management API（`/api/v1/apis`）から API スキーマを取得し�
 
 ```bash
 # 単一エンドポイント
-microcms gen-types blog
+microcms-cli gen-types blog
 
 # 出力先ディレクトリ指定（デフォルトは ./types/microcms.d.ts）
-microcms gen-types blog -o ./src/types/microcms
+microcms-cli gen-types blog -o ./src/types/microcms
 # => ./src/types/microcms/microcms.d.ts
 
 # 出力ファイルを直接指定
-microcms gen-types blog -o ./src/types/microcms.d.ts
+microcms-cli gen-types blog -o ./src/types/microcms.d.ts
 
 # 全エンドポイントを一括生成
-microcms gen-types --all
+microcms-cli gen-types --all
 # endpointIdを渡しても --all 指定時は無視されます
-microcms gen-types blog --all
+microcms-cli gen-types blog --all
 
 # CIなどで環境変数をインライン指定
 MICROCMS_SERVICE_DOMAIN=your-service-id \
 MICROCMS_MANAGEMENT_API_KEY=your-management-api-key \
-microcms gen-types blog
+microcms-cli gen-types blog
 ```
 
 #### Options
@@ -73,5 +74,13 @@ MICROCMS_MANAGEMENT_API_KEY=your-management-api-key
 ## Development
 
 ```bash
-bun run dev gen-types blog
+bun install
+bun run typecheck
+bun run test
+
+# ローカル実行
+bun run start -- gen-types blog
+
+# 単一バイナリを生成
+bun run compile
 ```
