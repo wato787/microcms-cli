@@ -1,7 +1,7 @@
 {
   "name": "microcms-cli",
   "version": "0.1.0",
-  "description": "CLI for microCMS documentation",
+  "description": "CLI for microCMS",
   "type": "module",
   "bin": {
     "microcms": "./bin"
