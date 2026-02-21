@@ -1,27 +1,41 @@
 {
-  "name": "microcms-cli",
+  "name": "@your-user-name/microcms-cli",
   "version": "0.1.0",
-  "description": "CLI for microCMS",
+  "description": "AI-friendly CLI tool for microCMS, built with Bun",
+  "main": "src/index.ts",
   "type": "module",
   "bin": {
-    "microcms": "./bin"
+    "microcms-cli": "./src/index.ts"
   },
+  "files": [
+    "src",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
-    "build": "bun build ./src/index.ts --outfile=./bin --target=node",
-    "dev": "bun run src/index.ts",
+    "start": "bun src/index.ts",
     "test": "bun test",
-    "typecheck": "tsgo --noEmit"
+    "typecheck": "bun build --typecheck src/index.ts",
+    "compile": "bun build ./src/index.ts --compile --outfile microcms-cli"
   },
   "dependencies": {
-    "commander": "^12.1.0"
+    "commander": "^12.0.0",
+    "picocolors": "^1.0.0"
   },
   "devDependencies": {
-    "@types/bun": "latest",
-    "@types/node": "^20.11.0",
-    "@typescript/native-preview": "^7.0.0-dev.20260220.1",
-    "typescript": "^5.9.3"
+    "@types/bun": "latest"
   },
   "engines": {
     "node": ">=18.0.0"
+  },
+  "keywords": [
+    "microcms",
+    "cli",
+    "bun",
+    "typescript",
+    "mcp"
+  ],
+  "publishConfig": {
+    "access": "public"
   }
 }
