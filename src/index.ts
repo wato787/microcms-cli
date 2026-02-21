@@ -21,7 +21,11 @@ program
 program
   .command('gen-types [endpointId]')
   .description('Generate TypeScript types from microCMS Management API schema')
-  .option('-o, --output <path>', 'Output path (default: ./types/microcms.d.ts)', './types')
+  .option(
+    '-o, --output <path>',
+    'Output path (default: ./types/microcms.d.ts)',
+    './types/microcms.d.ts',
+  )
   .option('--all', 'Generate types for all endpoints')
   .option('--service-domain <domain>', 'Override MICROCMS_SERVICE_DOMAIN')
   .option('--api-key <key>', 'Override MICROCMS_MANAGEMENT_API_KEY')

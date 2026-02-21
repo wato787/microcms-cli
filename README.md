@@ -38,7 +38,7 @@ Management API のスキーマを取得し、TypeScript 型を生成します。
 # 単一エンドポイント
 microcms gen-types blog
 
-# 出力先ディレクトリ指定（デフォルト: ./types）
+# 出力先ディレクトリ指定（デフォルトは ./types/microcms.d.ts）
 microcms gen-types blog -o ./src/types/microcms
 # => ./src/types/microcms/microcms.d.ts
 
@@ -47,6 +47,8 @@ microcms gen-types blog -o ./src/types/microcms.d.ts
 
 # 全エンドポイントを一括生成
 microcms gen-types --all
+# endpointIdを渡しても --all 指定時は無視されます
+microcms gen-types blog --all
 
 # CIなどで環境変数をインライン指定
 MICROCMS_SERVICE_DOMAIN=your-service-id \
@@ -70,6 +72,8 @@ CLI引数で指定しない場合、以下の環境変数が必要です。
 MICROCMS_SERVICE_DOMAIN=your-service-id
 MICROCMS_MANAGEMENT_API_KEY=your-management-api-key
 ```
+
+> 補足: 単一 endpoint で `apiType` が取得できない場合、CLI は警告を出して LIST として型生成します。
 
 ## Development
 
