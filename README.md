@@ -1,6 +1,7 @@
 # microCMS CLI
 
-microCMS 用の CLI ツールです。実行コマンドは `microcms-cli` です。
+microCMS 用の CLI ツールです。実行コマンドは `microcms-cli` です。  
+npm 配布物は事前ビルド済みのため、実行時に Bun は不要です（Node.js 18+）。
 
 - `gen-types`: Management API のスキーマから TypeScript 型を生成
 
@@ -10,6 +11,11 @@ microCMS 用の CLI ツールです。実行コマンドは `microcms-cli` で�
 npm install -g @wato787/microcms-cli
 # または
 bun add -g @wato787/microcms-cli
+```
+
+```bash
+# インストールせずに実行
+npx @wato787/microcms-cli gen-types blog
 ```
 
 ## Commands
@@ -75,11 +81,15 @@ MICROCMS_MANAGEMENT_API_KEY=your-management-api-key
 
 ```bash
 bun install
+npm run build
 bun run typecheck
 bun run test
 
-# ローカル実行
-bun run start -- gen-types blog
+# 事前ビルド済み CLI を実行
+npm run start -- gen-types blog
+
+# ソースから実行（Bun）
+bun run dev gen-types blog
 
 # 単一バイナリを生成
 bun run compile

@@ -3,32 +3,35 @@
   "version": "0.1.0",
   "description": "AI-friendly CLI tool for microCMS, built with Bun",
   "license": "MIT",
-  "main": "src/index.ts",
+  "main": "dist/index.js",
   "type": "module",
   "bin": {
-    "microcms-cli": "src/index.ts"
+    "microcms-cli": "dist/index.js"
   },
   "files": [
-    "src",
-    "!src/**/*.test.ts",
+    "dist",
     "README.md",
     "LICENSE"
   ],
   "scripts": {
-    "start": "bun src/index.ts",
+    "build": "tsc -p tsconfig.build.json",
+    "dev": "bun src/index.ts",
+    "start": "node dist/index.js",
     "test": "bun test",
-    "typecheck": "bun build --typecheck src/index.ts",
-    "compile": "bun build ./src/index.ts --compile --outfile microcms-cli"
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "compile": "bun build ./src/index.ts --compile --outfile microcms-cli",
+    "prepack": "npm run build"
   },
   "dependencies": {
     "commander": "^12.0.0",
     "picocolors": "^1.0.0"
   },
   "devDependencies": {
-    "@types/bun": "latest"
+    "@types/bun": "latest",
+    "@types/node": "^24.10.13",
+    "typescript": "^5.9.3"
   },
   "engines": {
-    "bun": ">=1.0.0",
     "node": ">=18.0.0"
   },
   "keywords": [
