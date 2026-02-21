@@ -1,76 +1,91 @@
 # microCMS CLI
 
-CLI for microCMS documentation (local files version).
+microCMS 用の CLI ツールです。
+
+- `docs`: ローカルに配置した docs テキストを表示
+- `gen-types`: Management API のスキーマから TypeScript 型を生成
 
 ## Setup
 
-1. Install dependencies:
 ```bash
 bun install
-```
-
-2. Create documentation files in `docs/` directory (see below)
-
-3. Build:
-```bash
 bun run build
 ```
 
-4. Run:
+## Commands
+
+### `docs [path]`
+
+ローカル `docs/` ディレクトリのドキュメントを表示します。
+
 ```bash
-./bin docs
-./bin docs /docs/api/content
+# サマリー表示
+microcms docs
+
+# 個別ドキュメント表示
+microcms docs /docs/api/content
 ```
+
+### `gen-types [endpointId] [options]`
+
+microCMS Management API（`/api/v1/apis`）から API スキーマを取得し、TypeScript 型を生成します。
+生成結果は `microcms.d.ts` に集約されます。
+共通型（`MicroCMSListResponse` など）は `microcms-js-sdk` の公式定義に合わせています。
+このコマンドは Content API のコンテンツ取得エンドポイントは呼びません。
+
+- `endpointId` 指定時: 対象 endpoint のスキーマのみ取得
+- `--all` 指定時: API 一覧を取得して全 endpoint を生成
+- 生成型: `XxxSchema`（スキーマ本体）と `XxxContent`（SDK の共通メタ情報付き）
+- 利用する Management API: `/api/v1/apis`, `/api/v1/apis/{endpoint}`
+
+```bash
+# 単一エンドポイント
+microcms gen-types blog
+
+# 出力先ディレクトリ指定（デフォルトは ./types/microcms.d.ts）
+microcms gen-types blog -o ./src/types/microcms
+# => ./src/types/microcms/microcms.d.ts
+
+# 出力ファイルを直接指定
+microcms gen-types blog -o ./src/types/microcms.d.ts
+
+# 全エンドポイントを一括生成
+microcms gen-types --all
+# endpointIdを渡しても --all 指定時は無視されます
+microcms gen-types blog --all
+
+# CIなどで環境変数をインライン指定
+MICROCMS_SERVICE_DOMAIN=your-service-id \
+MICROCMS_MANAGEMENT_API_KEY=your-management-api-key \
+microcms gen-types blog
+```
+
+#### Options
+
+- `-o, --output <path>`: 出力先（ディレクトリ指定時は `<path>/microcms.d.ts`、デフォルト `./types/microcms.d.ts`）
+- `--all`: 全エンドポイントの型を生成
+- `--service-domain <domain>`: `MICROCMS_SERVICE_DOMAIN` をCLI引数で上書き
+- `--api-key <key>`: `MICROCMS_MANAGEMENT_API_KEY` をCLI引数で上書き
+
+#### Required environment variables
+
+`gen-types` は **実行した利用者の環境変数** から設定を読み取ります。  
+CLI引数で指定しない場合、以下の環境変数が必要です。
+
+```bash
+MICROCMS_SERVICE_DOMAIN=your-service-id
+MICROCMS_MANAGEMENT_API_KEY=your-management-api-key
+```
+
+#### Required Management API permission
+
+`MICROCMS_MANAGEMENT_API_KEY` には、マネジメントAPIのGET権限として **「API情報の取得」** が必要です。
+
+> 補足: 単一 endpoint で `apiType` が取得できない場合、CLI は警告を出して LIST として型生成します。
 
 ## Development
 
 ```bash
-# Run in development mode
 bun run dev docs
-bun run dev docs /docs/api/content
+bun run dev gen-types blog
 ```
-
-## Documentation Structure
-
-```
-docs/
-├── summary.txt                    # Main summary (shown with: microcms docs)
-├── api/
-│   ├── content.txt               # /docs/api/content
-│   └── management.txt            # /docs/api/management
-├── getting-started/
-│   └── installation.txt          # /docs/getting-started/installation
-└── sdk/
-    └── javascript.txt            # /docs/sdk/javascript
-```
-
-## Usage
-
-```bash
-# Display summary
-microcms docs
-
-# Display specific documentation
-microcms docs /docs/api/content
-microcms docs /docs/getting-started/installation
-microcms docs /docs/sdk/javascript
-```
-
-## Benefits
-
-✅ No API calls - instant response
-✅ Works offline
-✅ Simple file management
-✅ Easy to version control
-✅ No authentication needed
-✅ Fast and lightweight
-
-## Updating Documentation
-
-Just edit the `.txt` files in the `docs/` directory and rebuild:
-
-```bash
-bun run build
-```
-
-Or distribute the docs folder with the binary.

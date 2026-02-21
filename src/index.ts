@@ -2,6 +2,7 @@
 
 import { Command } from 'commander';
 import { docsCommand } from './commands/docs.js';
+import { genTypesCommand } from './commands/gen-types.js';
 
 const program = new Command();
 
@@ -15,6 +16,26 @@ program
   .description('Display microCMS documentation')
   .action((path?: string) => {
     docsCommand(path);
+  });
+
+program
+  .command('gen-types [endpointId]')
+  .description('Fetch API schema from microCMS Management API and generate TypeScript types')
+  .option(
+    '-o, --output <path>',
+    'Output path (default: ./types/microcms.d.ts)',
+    './types/microcms.d.ts',
+  )
+  .option('--all', 'Generate types for all endpoints')
+  .option('--service-domain <domain>', 'Override MICROCMS_SERVICE_DOMAIN')
+  .option('--api-key <key>', 'Override MICROCMS_MANAGEMENT_API_KEY')
+  .action(async (endpointId: string | undefined, options: {
+    output?: string;
+    all?: boolean;
+    serviceDomain?: string;
+    apiKey?: string;
+  }) => {
+    await genTypesCommand(endpointId, options);
   });
 
 // Show help if no command is provided
