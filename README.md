@@ -64,6 +64,7 @@ microcms-cli gen-types blog
 #### Required environment variables
 
 `gen-types` は **実行した利用者の環境変数** から設定を読み取ります。  
+カレントディレクトリの `.env` と `.env.local` を自動で読み込みます（`.env.local` は後から読み込むため、同名の変数を上書きします）。[dotenv](https://github.com/motdotla/dotenv) 使用。  
 CLI引数で指定しない場合、以下の環境変数が必要です。
 
 ```bash

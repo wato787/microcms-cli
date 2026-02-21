@@ -1,5 +1,11 @@
 #!/usr/bin/env node
 
+import path from 'node:path';
+import dotenv from 'dotenv';
+
+dotenv.config();
+dotenv.config({ path: path.resolve(process.cwd(), '.env.local') });
+
 import { Command } from 'commander';
 import { genTypesCommand } from './commands/gen-types/index.js';
 
