@@ -8,7 +8,8 @@
   },
   "scripts": {
     "build": "bun build ./src/index.ts --outfile=./bin --target=node",
-    "dev": "bun run src/index.ts"
+    "dev": "bun run src/index.ts",
+    "typecheck": "tsgo --noEmit"
   },
   "dependencies": {
     "commander": "^12.1.0"
@@ -16,6 +17,7 @@
   "devDependencies": {
     "@types/bun": "latest",
     "@types/node": "^20.11.0",
+    "@typescript/native-preview": "^7.0.0-dev.20260220.1",
     "typescript": "^5.9.3"
   },
   "engines": {
