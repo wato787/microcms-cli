@@ -5,7 +5,7 @@
   "main": "src/index.ts",
   "type": "module",
   "bin": {
-    "microcms-cli": "./src/index.ts"
+    "microcms-cli": "src/index.ts"
   },
   "files": [
     "src",
