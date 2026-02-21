@@ -24,7 +24,7 @@ program
   .option('-o, --output <path>', 'Output path (default: ./types/microcms.d.ts)', './types')
   .option('--all', 'Generate types for all endpoints')
   .option('--service-domain <domain>', 'Override MICROCMS_SERVICE_DOMAIN')
-  .option('--api-key <key>', 'Override MICROCMS_MANAGEMENT_API_KEY / MICROCMS_API_KEY')
+  .option('--api-key <key>', 'Override MICROCMS_MANAGEMENT_API_KEY')
   .action(async (endpointId: string | undefined, options: {
     output?: string;
     all?: boolean;

@@ -59,7 +59,7 @@ microcms gen-types blog
 - `-o, --output <path>`: 出力先（ディレクトリ指定時は `<path>/microcms.d.ts`、デフォルト `./types/microcms.d.ts`）
 - `--all`: 全エンドポイントの型を生成
 - `--service-domain <domain>`: `MICROCMS_SERVICE_DOMAIN` をCLI引数で上書き
-- `--api-key <key>`: `MICROCMS_MANAGEMENT_API_KEY` / `MICROCMS_API_KEY` をCLI引数で上書き
+- `--api-key <key>`: `MICROCMS_MANAGEMENT_API_KEY` をCLI引数で上書き
 
 #### Required environment variables
 
@@ -70,8 +70,6 @@ CLI引数で指定しない場合、以下の環境変数が必要です。
 MICROCMS_SERVICE_DOMAIN=your-service-id
 MICROCMS_MANAGEMENT_API_KEY=your-management-api-key
 ```
-
-`MICROCMS_MANAGEMENT_API_KEY` がない場合は `MICROCMS_API_KEY` でも動作します。
 
 ## Development
 

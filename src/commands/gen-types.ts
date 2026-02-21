@@ -254,12 +254,11 @@ function resolveConfig(options: GenTypesOptions): ManagementClientConfig {
 
   const apiKey =
     toStringValue(options.apiKey) ??
-    toStringValue(process.env.MICROCMS_MANAGEMENT_API_KEY) ??
-    toStringValue(process.env.MICROCMS_API_KEY);
+    toStringValue(process.env.MICROCMS_MANAGEMENT_API_KEY);
 
   if (!apiKey) {
     throw new Error(
-      'MICROCMS_MANAGEMENT_API_KEY or MICROCMS_API_KEY is required. You can also pass --api-key.',
+      'MICROCMS_MANAGEMENT_API_KEY is required. You can also pass --api-key.',
     );
   }
 
