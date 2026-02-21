@@ -168,9 +168,8 @@ function renderEndpointType(target: GenerationTarget): string {
     emittedCustomTypeBlocks: [],
   };
 
+  const schemaTypeName = `${endpointBaseTypeName}Schema`;
   const contentTypeName = `${endpointBaseTypeName}Content`;
-  const baseTypeName =
-    apiType === 'OBJECT' ? 'MicroCMSObjectContent' : 'MicroCMSListContent';
 
   const rootFieldLines = target.schema.apiFields.map((field) =>
     renderTypePropertyLine(field, context),
@@ -178,7 +177,7 @@ function renderEndpointType(target: GenerationTarget): string {
 
   const responseTypeBlock =
     apiType === 'LIST'
-      ? `\nexport type ${endpointBaseTypeName}ListResponse = MicroCMSListResponse<${contentTypeName}>;`
+      ? `\nexport type ${endpointBaseTypeName}ListResponse = MicroCMSListResponse<${schemaTypeName}>;`
       : '';
 
   const customTypesBlock =
@@ -186,17 +185,22 @@ function renderEndpointType(target: GenerationTarget): string {
       ? `${context.emittedCustomTypeBlocks.join('\n\n')}\n\n`
       : '';
 
-  const contentTypeBlock =
+  const schemaTypeBlock =
     rootFieldLines.length === 0
-      ? `export type ${contentTypeName} = ${baseTypeName};`
-      : [`export type ${contentTypeName} = ${baseTypeName} & {`, ...rootFieldLines, '};'].join(
-          '\n',
-        );
+      ? `export type ${schemaTypeName} = Record<string, never>;`
+      : [`export type ${schemaTypeName} = {`, ...rootFieldLines, '};'].join('\n');
+
+  const contentTypeBlock =
+    apiType === 'OBJECT'
+      ? `export type ${contentTypeName} = ${schemaTypeName} & MicroCMSObjectContent;`
+      : `export type ${contentTypeName} = ${schemaTypeName} & MicroCMSListContent;`;
 
   return [
-    `// Endpoint: ${endpoint} (${apiType})`,
+    `// Endpoint schema from Management API: ${endpoint} (${apiType})`,
     '',
-    customTypesBlock + contentTypeBlock + responseTypeBlock,
+    customTypesBlock + schemaTypeBlock,
+    '',
+    contentTypeBlock + responseTypeBlock,
     '',
   ].join('\n');
 }

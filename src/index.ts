@@ -20,7 +20,7 @@ program
 
 program
   .command('gen-types [endpointId]')
-  .description('Generate TypeScript types from microCMS Management API schema')
+  .description('Fetch API schema from microCMS Management API and generate TypeScript types')
   .option(
     '-o, --output <path>',
     'Output path (default: ./types/microcms.d.ts)',
