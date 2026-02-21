@@ -1,5 +1,5 @@
 {
-  "name": "@your-user-name/microcms-cli",
+  "name": "@wato787/microcms-cli",
   "version": "0.1.0",
   "description": "AI-friendly CLI tool for microCMS, built with Bun",
   "main": "src/index.ts",
