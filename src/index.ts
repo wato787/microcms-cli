@@ -1,10 +1,22 @@
 #!/usr/bin/env node
 
+import fs from 'node:fs';
 import path from 'node:path';
 import dotenv from 'dotenv';
 
-dotenv.config();
-dotenv.config({ path: path.resolve(process.cwd(), '.env.local') });
+function findEnvDir(dir: string): string | null {
+  const parent = path.dirname(dir);
+  if (dir === parent) return null;
+  const env = path.join(dir, '.env');
+  const envLocal = path.join(dir, '.env.local');
+  if (fs.existsSync(env) || fs.existsSync(envLocal)) return dir;
+  return findEnvDir(parent);
+}
+
+const envDir = findEnvDir(process.cwd()) ?? process.cwd();
+dotenv.config({ path: path.join(envDir, '.env') });
+dotenv.config({ path: path.join(envDir, '.env.local') });
+process.env.__MICROCMS_CLI_ENV_DIR = envDir;
 
 import { Command } from 'commander';
 import { genTypesCommand } from './commands/gen-types/index.js';

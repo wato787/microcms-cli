@@ -23,8 +23,10 @@ export function resolveConfig(options: GenTypesOptions): ManagementClientConfig 
     toStringValue(options.serviceDomain) ??
     toStringValue(process.env.MICROCMS_SERVICE_DOMAIN);
   if (!serviceDomain) {
+    const envDir = process.env.__MICROCMS_CLI_ENV_DIR ?? process.cwd();
     throw new Error(
-      'MICROCMS_SERVICE_DOMAIN is required. You can also pass --service-domain.',
+      'MICROCMS_SERVICE_DOMAIN is required. You can also pass --service-domain.\n' +
+        `(Searched for .env / .env.local in: ${envDir}. CWD: ${process.cwd()})`,
     );
   }
 
@@ -32,8 +34,10 @@ export function resolveConfig(options: GenTypesOptions): ManagementClientConfig 
     toStringValue(options.apiKey) ??
     toStringValue(process.env.MICROCMS_MANAGEMENT_API_KEY);
   if (!apiKey) {
+    const envDir = process.env.__MICROCMS_CLI_ENV_DIR ?? process.cwd();
     throw new Error(
-      'MICROCMS_MANAGEMENT_API_KEY is required. You can also pass --api-key.',
+      'MICROCMS_MANAGEMENT_API_KEY is required. You can also pass --api-key.\n' +
+        `(Searched for .env / .env.local in: ${envDir}. CWD: ${process.cwd()})`,
     );
   }
 
