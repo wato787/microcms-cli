@@ -2,7 +2,6 @@
 
 microCMS 用の CLI ツールです。
 
-- `docs`: ローカルに配置した docs テキストを表示
 - `gen-types`: Management API のスキーマから TypeScript 型を生成
 
 ## Setup
@@ -13,18 +12,6 @@ bun run build
 ```
 
 ## Commands
-
-### `docs [path]`
-
-ローカル `docs/` ディレクトリのドキュメントを表示します。
-
-```bash
-# サマリー表示
-microcms docs
-
-# 個別ドキュメント表示
-microcms docs /docs/api/content
-```
 
 ### `gen-types [endpointId] [options]`
 
@@ -86,6 +73,5 @@ MICROCMS_MANAGEMENT_API_KEY=your-management-api-key
 ## Development
 
 ```bash
-bun run dev docs
 bun run dev gen-types blog
 ```
