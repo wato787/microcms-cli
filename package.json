@@ -1,27 +1,48 @@
 {
-  "name": "microcms-cli",
+  "name": "@wato787/microcms-cli",
   "version": "0.1.0",
-  "description": "CLI for microCMS",
+  "description": "AI-friendly CLI tool for microCMS, built with Bun",
+  "license": "MIT",
+  "main": "dist/index.js",
   "type": "module",
   "bin": {
-    "microcms": "./bin"
+    "microcms-cli": "dist/index.js"
   },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
-    "build": "bun build ./src/index.ts --outfile=./bin --target=node",
-    "dev": "bun run src/index.ts",
+    "build": "tsc -p tsconfig.build.json && node -e \"require('node:fs').chmodSync('dist/index.js', 0o755)\"",
+    "dev": "bun src/index.ts",
+    "start": "node dist/index.js",
     "test": "bun test",
-    "typecheck": "tsgo --noEmit"
+    "typecheck": "tsgo --noEmit",
+    "compile": "bun build ./src/index.ts --compile --outfile microcms-cli",
+    "prepack": "npm run build"
   },
   "dependencies": {
-    "commander": "^12.1.0"
+    "commander": "^12.0.0",
+    "picocolors": "^1.0.0"
   },
   "devDependencies": {
     "@types/bun": "latest",
-    "@types/node": "^20.11.0",
+    "@types/node": "^24.10.13",
     "@typescript/native-preview": "^7.0.0-dev.20260220.1",
     "typescript": "^5.9.3"
   },
   "engines": {
     "node": ">=18.0.0"
+  },
+  "keywords": [
+    "microcms",
+    "cli",
+    "bun",
+    "typescript",
+    "mcp"
+  ],
+  "publishConfig": {
+    "access": "public"
   }
 }
