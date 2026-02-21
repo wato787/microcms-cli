@@ -8,6 +8,8 @@ const MANAGEMENT_API_BASE_DOMAIN = 'microcms-management.io';
 export interface GenTypesOptions {
   output?: string;
   all?: boolean;
+  serviceDomain?: string;
+  apiKey?: string;
 }
 
 interface ManagementClientConfig {
@@ -240,19 +242,24 @@ function buildManagementApiUrl(serviceDomain: string, resourcePath: string): str
   return `https://${serviceDomain}.${MANAGEMENT_API_BASE_DOMAIN}/api/v1/${resourcePath}`;
 }
 
-function resolveConfig(): ManagementClientConfig {
-  const serviceDomain = toStringValue(process.env.MICROCMS_SERVICE_DOMAIN);
+function resolveConfig(options: GenTypesOptions): ManagementClientConfig {
+  const serviceDomain =
+    toStringValue(options.serviceDomain) ??
+    toStringValue(process.env.MICROCMS_SERVICE_DOMAIN);
   if (!serviceDomain) {
-    throw new Error('MICROCMS_SERVICE_DOMAIN is required.');
+    throw new Error(
+      'MICROCMS_SERVICE_DOMAIN is required. You can also pass --service-domain.',
+    );
   }
 
   const apiKey =
+    toStringValue(options.apiKey) ??
     toStringValue(process.env.MICROCMS_MANAGEMENT_API_KEY) ??
     toStringValue(process.env.MICROCMS_API_KEY);
 
   if (!apiKey) {
     throw new Error(
-      'MICROCMS_MANAGEMENT_API_KEY or MICROCMS_API_KEY is required.',
+      'MICROCMS_MANAGEMENT_API_KEY or MICROCMS_API_KEY is required. You can also pass --api-key.',
     );
   }
 
@@ -268,6 +275,7 @@ async function fetchFromManagementApi(
     headers: {
       'X-MICROCMS-API-KEY': apiKey,
       'Content-Type': 'application/json',
+      'User-Agent': 'microcms-cli',
     },
   });
 
@@ -521,31 +529,40 @@ function renderDefinitionsFile(targets: GenerationTarget[]): string {
   return [commonTypesBlock, endpointBlocks].join('\n');
 }
 
-function getTargetEndpoints(
-  endpointId: string | undefined,
-  all: boolean,
-  apiList: ApiListItem[],
-): ApiListItem[] {
-  if (all) {
-    const deduped = new Map<string, ApiListItem>();
-    for (const api of apiList) {
-      if (!deduped.has(api.apiEndpoint)) {
-        deduped.set(api.apiEndpoint, api);
-      }
+function getTargetEndpoints(apiList: ApiListItem[]): ApiListItem[] {
+  const deduped = new Map<string, ApiListItem>();
+  for (const api of apiList) {
+    if (!deduped.has(api.apiEndpoint)) {
+      deduped.set(api.apiEndpoint, api);
     }
-    return Array.from(deduped.values());
   }
 
-  if (!endpointId) {
+  return Array.from(deduped.values()).sort((a, b) =>
+    a.apiEndpoint.localeCompare(b.apiEndpoint),
+  );
+}
+
+function resolveSingleEndpoint(endpointId: string | undefined): string {
+  const resolved = toStringValue(endpointId);
+  if (!resolved) {
     throw new Error('endpointId is required unless --all is specified.');
   }
+  return resolved;
+}
 
-  const matched = apiList.find((api) => api.apiEndpoint === endpointId);
-  if (matched) {
-    return [matched];
-  }
-
-  return [{ apiEndpoint: endpointId }];
+function createGenerationTarget(
+  endpoint: string,
+  schema: ManagementApiSchema,
+  apiType?: string,
+): GenerationTarget {
+  return {
+    endpoint,
+    apiType,
+    schema: {
+      ...schema,
+      apiEndpoint: schema.apiEndpoint ?? endpoint,
+    },
+  };
 }
 
 export async function genTypesCommand(
@@ -556,21 +573,26 @@ export async function genTypesCommand(
     const all = Boolean(options.all);
     const outputPath = options.output ?? DEFAULT_OUTPUT_DIR;
     const outputFilePath = resolveOutputFilePath(outputPath);
-    const config = resolveConfig();
+    const config = resolveConfig(options);
 
     fs.mkdirSync(path.dirname(outputFilePath), { recursive: true });
 
-    const apiList = await fetchApiList(config);
-    const targetApis = getTargetEndpoints(endpointId, all, apiList);
-
     const targets: GenerationTarget[] = [];
-    for (const api of targetApis) {
-      const schema = await fetchApiSchema(config, api.apiEndpoint);
-      targets.push({
-        endpoint: api.apiEndpoint,
-        apiType: api.apiType,
-        schema,
-      });
+    if (all) {
+      const apiList = await fetchApiList(config);
+      const targetApis = getTargetEndpoints(apiList);
+      for (const api of targetApis) {
+        const schema = await fetchApiSchema(config, api.apiEndpoint);
+        targets.push(createGenerationTarget(api.apiEndpoint, schema, api.apiType));
+      }
+    } else {
+      const endpoint = resolveSingleEndpoint(endpointId);
+      const schema = await fetchApiSchema(config, endpoint);
+      targets.push(createGenerationTarget(endpoint, schema));
+    }
+
+    if (targets.length === 0) {
+      throw new Error('No endpoints found from Management API.');
     }
 
     const source = renderDefinitionsFile(targets);

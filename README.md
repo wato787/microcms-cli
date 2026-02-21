@@ -31,6 +31,9 @@ microcms docs /docs/api/content
 Management API のスキーマを取得し、TypeScript 型を生成します。
 生成結果は `microcms.d.ts` に集約されます。
 
+- `endpointId` 指定時: 対象 endpoint のスキーマのみ取得
+- `--all` 指定時: API 一覧を取得して全 endpoint を生成
+
 ```bash
 # 単一エンドポイント
 microcms gen-types blog
@@ -44,16 +47,24 @@ microcms gen-types blog -o ./src/types/microcms.d.ts
 
 # 全エンドポイントを一括生成
 microcms gen-types --all
+
+# CIなどで環境変数をインライン指定
+MICROCMS_SERVICE_DOMAIN=your-service-id \
+MICROCMS_MANAGEMENT_API_KEY=your-management-api-key \
+microcms gen-types blog
 ```
 
 #### Options
 
 - `-o, --output <path>`: 出力先（ディレクトリ指定時は `<path>/microcms.d.ts`、デフォルト `./types/microcms.d.ts`）
 - `--all`: 全エンドポイントの型を生成
+- `--service-domain <domain>`: `MICROCMS_SERVICE_DOMAIN` をCLI引数で上書き
+- `--api-key <key>`: `MICROCMS_MANAGEMENT_API_KEY` / `MICROCMS_API_KEY` をCLI引数で上書き
 
 #### Required environment variables
 
-`gen-types` 実行時に以下が必要です。
+`gen-types` は **実行した利用者の環境変数** から設定を読み取ります。  
+CLI引数で指定しない場合、以下の環境変数が必要です。
 
 ```bash
 MICROCMS_SERVICE_DOMAIN=your-service-id

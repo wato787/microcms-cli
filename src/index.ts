@@ -21,9 +21,16 @@ program
 program
   .command('gen-types [endpointId]')
   .description('Generate TypeScript types from microCMS Management API schema')
-  .option('-o, --output <path>', 'Output directory (default: ./types)', './types')
+  .option('-o, --output <path>', 'Output path (default: ./types/microcms.d.ts)', './types')
   .option('--all', 'Generate types for all endpoints')
-  .action(async (endpointId: string | undefined, options: { output?: string; all?: boolean }) => {
+  .option('--service-domain <domain>', 'Override MICROCMS_SERVICE_DOMAIN')
+  .option('--api-key <key>', 'Override MICROCMS_MANAGEMENT_API_KEY / MICROCMS_API_KEY')
+  .action(async (endpointId: string | undefined, options: {
+    output?: string;
+    all?: boolean;
+    serviceDomain?: string;
+    apiKey?: string;
+  }) => {
     await genTypesCommand(endpointId, options);
   });
 
