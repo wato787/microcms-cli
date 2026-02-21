@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { Command } from 'commander';
-import { genTypesCommand } from './commands/gen-types.js';
+import { genTypesCommand } from './commands/gen-types/index.js';
 
 const program = new Command();
 
