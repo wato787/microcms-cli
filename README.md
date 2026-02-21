@@ -29,13 +29,18 @@ microcms docs /docs/api/content
 ### `gen-types [endpointId] [options]`
 
 Management API のスキーマを取得し、TypeScript 型を生成します。
+生成結果は `microcms.d.ts` に集約されます。
 
 ```bash
 # 単一エンドポイント
 microcms gen-types blog
 
-# 出力先指定（デフォルト: ./types）
+# 出力先ディレクトリ指定（デフォルト: ./types）
 microcms gen-types blog -o ./src/types/microcms
+# => ./src/types/microcms/microcms.d.ts
+
+# 出力ファイルを直接指定
+microcms gen-types blog -o ./src/types/microcms.d.ts
 
 # 全エンドポイントを一括生成
 microcms gen-types --all
@@ -43,7 +48,7 @@ microcms gen-types --all
 
 #### Options
 
-- `-o, --output <path>`: 出力ディレクトリ（デフォルト `./types`）
+- `-o, --output <path>`: 出力先（ディレクトリ指定時は `<path>/microcms.d.ts`、デフォルト `./types/microcms.d.ts`）
 - `--all`: 全エンドポイントの型を生成
 
 #### Required environment variables
