@@ -77,6 +77,10 @@ MICROCMS_SERVICE_DOMAIN=your-service-id
 MICROCMS_MANAGEMENT_API_KEY=your-management-api-key
 ```
 
+#### Required Management API permission
+
+`MICROCMS_MANAGEMENT_API_KEY` には、マネジメントAPIのGET権限として **「API情報の取得」** が必要です。
+
 > 補足: 単一 endpoint で `apiType` が取得できない場合、CLI は警告を出して LIST として型生成します。
 
 ## Development

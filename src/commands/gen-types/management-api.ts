@@ -25,13 +25,21 @@ async function fetchFromManagementApi(
     method: 'GET',
     headers: {
       'X-MICROCMS-API-KEY': apiKey,
-      'Content-Type': 'application/json',
-      'User-Agent': 'microcms-cli gen-types',
     },
   });
 
   if (!response.ok) {
     const responseBody = await response.text();
+    if (response.status === 401) {
+      throw new Error(
+        `Management API authentication failed (401). Check MICROCMS_MANAGEMENT_API_KEY. ${responseBody}`,
+      );
+    }
+    if (response.status === 403) {
+      throw new Error(
+        `Management API authorization failed (403). Ensure "API情報の取得" is enabled for the key. ${responseBody}`,
+      );
+    }
     throw new Error(
       `Management API request failed (${response.status} ${response.statusText}): ${responseBody}`,
     );
@@ -141,7 +149,6 @@ function parseApiList(rawResponse: unknown): ApiListItem[] {
         candidateArrays.push(value);
       }
     }
-    candidateArrays.push([rawResponse]);
   }
 
   for (const items of candidateArrays) {
