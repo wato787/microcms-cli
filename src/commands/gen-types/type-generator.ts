@@ -98,6 +98,7 @@ function resolveFieldType(field: ManagementApiField, context: GenerationContext)
     case 'textArea':
     case 'richEditor':
     case 'richEditorV2':
+    case 'richEditorOld':
     case 'date':
       return 'string';
     case 'number':
@@ -108,12 +109,17 @@ function resolveFieldType(field: ManagementApiField, context: GenerationContext)
       return 'MicroCMSImage';
     case 'mediaList':
       return 'MicroCMSImage[]';
+    case 'file':
+      return 'MicroCMSFile';
     case 'relation':
       return 'MicroCMSContentId';
     case 'relationList':
       return 'MicroCMSContentId[]';
     case 'select':
       return field.multipleSelect ? 'string[]' : 'string';
+    case 'iframe':
+    case 'extension':
+      return 'Record<string, unknown>';
     case 'custom':
       if (!field.customFieldCreatedAt) {
         return 'Record<string, unknown>';
@@ -232,6 +238,11 @@ export function renderDefinitionsFile(targets: GenerationTarget[]): string {
     '  width?: number;',
     '  height?: number;',
     '  alt?: string;',
+    '}',
+    '',
+    'export interface MicroCMSFile {',
+    '  url: string;',
+    '  fileSize?: number;',
     '}',
     '',
     'export interface MicroCMSListResponse<T> {',
