@@ -30,6 +30,7 @@ microcms docs /docs/api/content
 
 Management API のスキーマを取得し、TypeScript 型を生成します。
 生成結果は `microcms.d.ts` に集約されます。
+共通型（`MicroCMSListResponse` など）は `microcms-js-sdk` の公式定義に合わせています。
 
 - `endpointId` 指定時: 対象 endpoint のスキーマのみ取得
 - `--all` 指定時: API 一覧を取得して全 endpoint を生成
