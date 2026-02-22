@@ -21,17 +21,19 @@ function createSchema(overrides: Partial<ManagementApiSchema> = {}): ManagementA
   };
 }
 
-function createHarness(overrides: {
-  resolveOutputFilePath?: (outputOption?: string) => string;
-  resolveConfig?: (options: GenTypesOptions) => ManagementClientConfig;
-  resolveSingleEndpoint?: (endpointId: string | undefined) => string;
-  fetchApiList?: (config: ManagementClientConfig) => Promise<ApiListItem[]>;
-  fetchApiSchema?: (
-    config: ManagementClientConfig,
-    endpointId: string,
-  ) => Promise<ManagementApiSchema>;
-  renderDefinitionsFile?: (targets: GenerationTarget[]) => string;
-} = {}) {
+function createHarness(
+  overrides: {
+    resolveOutputFilePath?: (outputOption?: string) => string;
+    resolveConfig?: (options: GenTypesOptions) => ManagementClientConfig;
+    resolveSingleEndpoint?: (endpointId: string | undefined) => string;
+    fetchApiList?: (config: ManagementClientConfig) => Promise<ApiListItem[]>;
+    fetchApiSchema?: (
+      config: ManagementClientConfig,
+      endpointId: string,
+    ) => Promise<ManagementApiSchema>;
+    renderDefinitionsFile?: (targets: GenerationTarget[]) => string;
+  } = {},
+) {
   const calls = {
     fetchApiSchemaEndpoints: [] as string[],
     renderedTargets: [] as GenerationTarget[][],
@@ -44,7 +46,8 @@ function createHarness(overrides: {
   };
 
   const command = createGenTypesCommand({
-    resolveOutputFilePath: overrides.resolveOutputFilePath ?? (() => '/tmp/generated/microcms.d.ts'),
+    resolveOutputFilePath:
+      overrides.resolveOutputFilePath ?? (() => '/tmp/generated/microcms.d.ts'),
     resolveConfig: overrides.resolveConfig ?? (() => FIXTURE_CONFIG),
     resolveSingleEndpoint:
       overrides.resolveSingleEndpoint ??
@@ -105,9 +108,7 @@ describe('genTypesCommand', () => {
       },
       fetchApiSchema: async (_config: ManagementClientConfig, endpointId: string) => {
         fetchApiSchemaEndpoints.push(endpointId);
-        return endpointId === 'news'
-          ? createSchema()
-          : createSchema({ apiEndpoint: endpointId });
+        return endpointId === 'news' ? createSchema() : createSchema({ apiEndpoint: endpointId });
       },
     });
 
@@ -115,9 +116,7 @@ describe('genTypesCommand', () => {
 
     expect(fetchApiListCalls).toEqual([FIXTURE_CONFIG]);
     expect(fetchApiSchemaEndpoints).toEqual(['blog', 'news']);
-    expect(calls.warn).toContain(
-      '[warn] endpointId is ignored because --all is specified.',
-    );
+    expect(calls.warn).toContain('[warn] endpointId is ignored because --all is specified.');
 
     expect(calls.renderedTargets).toHaveLength(1);
     const [targets] = calls.renderedTargets;
@@ -131,9 +130,7 @@ describe('genTypesCommand', () => {
         encoding: 'utf-8',
       },
     ]);
-    expect(calls.log).toEqual([
-      'Generated 2 endpoint type(s): /tmp/generated/microcms.d.ts',
-    ]);
+    expect(calls.log).toEqual(['Generated 2 endpoint type(s): /tmp/generated/microcms.d.ts']);
     expect(calls.exit).toEqual([]);
   });
 
@@ -224,10 +221,7 @@ describe('genTypesCommand', () => {
     await command('blog', {});
 
     expect(calls.error).toHaveLength(1);
-    expect(calls.error[0]).toEqual([
-      'Error:',
-      'missing MICROCMS_SERVICE_DOMAIN',
-    ]);
+    expect(calls.error[0]).toEqual(['Error:', 'missing MICROCMS_SERVICE_DOMAIN']);
     expect(calls.exit).toEqual([1]);
     expect(calls.write).toEqual([]);
     expect(calls.log).toEqual([]);

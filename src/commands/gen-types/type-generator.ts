@@ -1,9 +1,5 @@
 import { toPascalCase, toTypePropertyName } from './shared.js';
-import type {
-  GenerationTarget,
-  ManagementApiField,
-  ManagementCustomField,
-} from './types.js';
+import type { GenerationTarget, ManagementApiField, ManagementCustomField } from './types.js';
 
 interface GenerationContext {
   endpointBaseTypeName: string;
@@ -56,10 +52,7 @@ function resolveCustomFieldTypeName(
   return uniqueName;
 }
 
-function emitCustomFieldType(
-  createdAt: string,
-  context: GenerationContext,
-): string {
+function emitCustomFieldType(createdAt: string, context: GenerationContext): string {
   const typeName = resolveCustomFieldTypeName(createdAt, context);
   if (!typeName) {
     return 'Record<string, unknown>';
@@ -80,9 +73,7 @@ function emitCustomFieldType(
 
   context.processingCustomFieldIds.add(createdAt);
 
-  const fieldLines = customField.fields.map((field) =>
-    renderTypePropertyLine(field, context),
-  );
+  const fieldLines = customField.fields.map((field) => renderTypePropertyLine(field, context));
 
   const typeBlock =
     fieldLines.length === 0
@@ -116,7 +107,9 @@ function resolveFieldType(field: ManagementApiField, context: GenerationContext)
     case 'file':
       return 'MicroCMSFile';
     case 'relation':
-      return field.referencedApiEndpoint ? `${toPascalCase(field.referencedApiEndpoint)}Content` : 'MicroCMSContentId';
+      return field.referencedApiEndpoint
+        ? `${toPascalCase(field.referencedApiEndpoint)}Content`
+        : 'MicroCMSContentId';
     case 'relationList':
       return 'MicroCMSContentId[]';
     case 'select':
@@ -151,20 +144,14 @@ function resolveFieldType(field: ManagementApiField, context: GenerationContext)
   }
 }
 
-function renderTypePropertyLine(
-  field: ManagementApiField,
-  context: GenerationContext,
-): string {
+function renderTypePropertyLine(field: ManagementApiField, context: GenerationContext): string {
   const propertyName = toTypePropertyName(field.fieldId);
   const optionalMark = field.required ? '' : '?';
   const typeExpression = resolveFieldType(field, context);
   return `  ${propertyName}${optionalMark}: ${typeExpression};`;
 }
 
-function renderEndpointType(
-  target: GenerationTarget,
-  endpointBaseTypeName: string,
-): string {
+function renderEndpointType(target: GenerationTarget, endpointBaseTypeName: string): string {
   const endpoint = target.endpoint;
   const apiType = normalizeApiType(target.schema.apiType ?? target.apiType);
 
@@ -218,9 +205,7 @@ function renderEndpointType(
 }
 
 export function renderDefinitionsFile(targets: GenerationTarget[]): string {
-  const sortedTargets = [...targets].sort((a, b) =>
-    a.endpoint.localeCompare(b.endpoint),
-  );
+  const sortedTargets = [...targets].sort((a, b) => a.endpoint.localeCompare(b.endpoint));
   const usedEndpointBaseTypeNames = new Set<string>();
 
   const commonTypesBlock = [

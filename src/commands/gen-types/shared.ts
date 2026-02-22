@@ -28,9 +28,7 @@ export function toStringArray(value: unknown): string[] | undefined {
 
 export function toPascalCase(value: string): string {
   const chunks = value.split(/[^A-Za-z0-9]+/).filter((chunk) => chunk.length > 0);
-  const raw = chunks
-    .map((chunk) => `${chunk.charAt(0).toUpperCase()}${chunk.slice(1)}`)
-    .join('');
+  const raw = chunks.map((chunk) => `${chunk.charAt(0).toUpperCase()}${chunk.slice(1)}`).join('');
 
   const safe = raw.length > 0 ? raw : 'Generated';
   return /^[A-Za-z_$]/.test(safe) ? safe : `T${safe}`;

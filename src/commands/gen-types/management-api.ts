@@ -1,10 +1,5 @@
 import { MANAGEMENT_API_BASE_DOMAIN } from './constants.js';
-import {
-  isRecord,
-  toBooleanValue,
-  toStringArray,
-  toStringValue,
-} from './shared.js';
+import { isRecord, toBooleanValue, toStringArray, toStringValue } from './shared.js';
 import type {
   ApiListItem,
   ManagementApiField,
@@ -17,10 +12,7 @@ function buildManagementApiUrl(serviceDomain: string, resourcePath: string): str
   return `https://${serviceDomain}.${MANAGEMENT_API_BASE_DOMAIN}/api/v1/${resourcePath}`;
 }
 
-async function fetchFromManagementApi(
-  url: string,
-  apiKey: string,
-): Promise<unknown> {
+async function fetchFromManagementApi(url: string, apiKey: string): Promise<unknown> {
   const response = await fetch(url, {
     method: 'GET',
     headers: {
@@ -125,8 +117,7 @@ function parseApiListItem(rawItem: unknown): ApiListItem | null {
     return null;
   }
 
-  const apiEndpoint =
-    toStringValue(rawItem.apiEndpoint) ?? toStringValue(rawItem.endpoint);
+  const apiEndpoint = toStringValue(rawItem.apiEndpoint) ?? toStringValue(rawItem.endpoint);
   if (!apiEndpoint) {
     return null;
   }
@@ -164,9 +155,7 @@ function parseApiList(rawResponse: unknown): ApiListItem[] {
   throw new Error('Failed to parse API list from Management API response.');
 }
 
-export async function fetchApiList(
-  config: ManagementClientConfig,
-): Promise<ApiListItem[]> {
+export async function fetchApiList(config: ManagementClientConfig): Promise<ApiListItem[]> {
   const url = buildManagementApiUrl(config.serviceDomain, 'apis');
   const rawResponse = await fetchFromManagementApi(url, config.apiKey);
   return parseApiList(rawResponse);
@@ -176,10 +165,7 @@ export async function fetchApiSchema(
   config: ManagementClientConfig,
   endpointId: string,
 ): Promise<ManagementApiSchema> {
-  const url = buildManagementApiUrl(
-    config.serviceDomain,
-    `apis/${encodeURIComponent(endpointId)}`,
-  );
+  const url = buildManagementApiUrl(config.serviceDomain, `apis/${encodeURIComponent(endpointId)}`);
   const rawResponse = await fetchFromManagementApi(url, config.apiKey);
   return parseApiSchema(rawResponse);
 }

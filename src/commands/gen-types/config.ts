@@ -20,8 +20,7 @@ export function resolveOutputFilePath(outputOption?: string): string {
 
 export function resolveConfig(options: GenTypesOptions): ManagementClientConfig {
   const serviceDomain =
-    toStringValue(options.serviceDomain) ??
-    toStringValue(process.env.MICROCMS_SERVICE_DOMAIN);
+    toStringValue(options.serviceDomain) ?? toStringValue(process.env.MICROCMS_SERVICE_DOMAIN);
   if (!serviceDomain) {
     const envDir = process.env.__MICROCMS_CLI_ENV_DIR ?? process.cwd();
     throw new Error(
@@ -30,9 +29,7 @@ export function resolveConfig(options: GenTypesOptions): ManagementClientConfig 
     );
   }
 
-  const apiKey =
-    toStringValue(options.apiKey) ??
-    toStringValue(process.env.MICROCMS_API_KEY);
+  const apiKey = toStringValue(options.apiKey) ?? toStringValue(process.env.MICROCMS_API_KEY);
   if (!apiKey) {
     const envDir = process.env.__MICROCMS_CLI_ENV_DIR ?? process.cwd();
     throw new Error(

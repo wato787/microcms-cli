@@ -28,11 +28,7 @@ export interface GenTypesCommandDeps {
       recursive?: boolean | undefined;
     },
   ) => void;
-  writeFileSync: (
-    file: string,
-    data: string,
-    options?: BufferEncoding,
-  ) => void;
+  writeFileSync: (file: string, data: string, options?: BufferEncoding) => void;
   warn: (message: string) => void;
   log: (message: string) => void;
   error: (...args: unknown[]) => void;
@@ -47,9 +43,7 @@ function getTargetEndpoints(apiList: ApiListItem[]): ApiListItem[] {
     }
   }
 
-  return Array.from(deduped.values()).sort((a, b) =>
-    a.apiEndpoint.localeCompare(b.apiEndpoint),
-  );
+  return Array.from(deduped.values()).sort((a, b) => a.apiEndpoint.localeCompare(b.apiEndpoint));
 }
 
 function createGenerationTarget(
@@ -67,10 +61,7 @@ function createGenerationTarget(
   };
 }
 
-function resolveApiTypeByEndpoint(
-  apiList: ApiListItem[],
-  endpoint: string,
-): string | undefined {
+function resolveApiTypeByEndpoint(apiList: ApiListItem[], endpoint: string): string | undefined {
   return apiList.find((item) => item.apiEndpoint === endpoint)?.apiType;
 }
 
@@ -89,9 +80,7 @@ async function resolveSingleEndpointApiType(
     const apiList = await fetchApiListFn(config);
     return resolveApiTypeByEndpoint(apiList, endpoint);
   } catch (error) {
-    warn(
-      `[warn] Failed to resolve apiType for "${endpoint}" from /apis: ${toErrorMessage(error)}`,
-    );
+    warn(`[warn] Failed to resolve apiType for "${endpoint}" from /apis: ${toErrorMessage(error)}`);
     return undefined;
   }
 }
@@ -149,9 +138,7 @@ async function runGenTypesCommand(
       );
 
       if (!apiType && !schema.apiType) {
-        deps.warn(
-          `[warn] apiType for "${endpoint}" could not be resolved. Falling back to LIST.`,
-        );
+        deps.warn(`[warn] apiType for "${endpoint}" could not be resolved. Falling back to LIST.`);
       }
 
       targets.push(createGenerationTarget(endpoint, schema, apiType));
@@ -169,10 +156,7 @@ async function runGenTypesCommand(
 
 export function createGenTypesCommand(
   overrides: Partial<GenTypesCommandDeps> = {},
-): (
-  endpointId: string | undefined,
-  options: GenTypesOptions,
-) => Promise<void> {
+): (endpointId: string | undefined, options: GenTypesOptions) => Promise<void> {
   const deps: GenTypesCommandDeps = {
     ...defaultGenTypesCommandDeps,
     ...overrides,
