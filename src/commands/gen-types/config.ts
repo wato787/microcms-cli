@@ -32,11 +32,11 @@ export function resolveConfig(options: GenTypesOptions): ManagementClientConfig 
 
   const apiKey =
     toStringValue(options.apiKey) ??
-    toStringValue(process.env.MICROCMS_MANAGEMENT_API_KEY);
+    toStringValue(process.env.MICROCMS_API_KEY);
   if (!apiKey) {
     const envDir = process.env.__MICROCMS_CLI_ENV_DIR ?? process.cwd();
     throw new Error(
-      'MICROCMS_MANAGEMENT_API_KEY is required. You can also pass --api-key.\n' +
+      'MICROCMS_API_KEY is required. You can also pass --api-key.\n' +
         `(Searched for .env / .env.local in: ${envDir}. CWD: ${process.cwd()})`,
     );
   }
