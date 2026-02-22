@@ -21,6 +21,7 @@ export interface ManagementApiField {
   kind: string;
   required: boolean;
   multipleSelect: boolean;
+  referencedApiEndpoint?: string;
   customFieldCreatedAt?: string;
   customFieldCreatedAtList?: string[];
 }
