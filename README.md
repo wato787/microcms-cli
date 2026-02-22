@@ -82,12 +82,12 @@ MICROCMS_API_KEY=your-management-api-key
 
 ```bash
 bun install
-npm run build
+bun run build
 bun run typecheck
 bun run test
 
 # 事前ビルド済み CLI を実行
-npm run start -- generate:types blog
+bun run start -- generate:types blog
 
 # ソースから実行（Bun）
 bun run dev generate:types blog
