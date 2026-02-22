@@ -95,3 +95,28 @@ bun run dev gen-types blog
 # 単一バイナリを生成
 bun run compile
 ```
+
+## npm リリース（GitHub Releases 連動）
+
+`release` の `published` イベントをトリガーに、GitHub Actions で npm へ自動公開します。  
+ローカルで `npm publish` を実行する必要はありません。
+
+### 事前設定
+
+GitHub リポジトリの `Settings > Secrets and variables > Actions` に以下を登録してください。
+
+- `NPM_TOKEN`: npm の Publish 権限を持つトークン（Automation Token 推奨）
+
+### リリース手順
+
+1. `package.json` の `version` を更新
+2. 対応するタグ（例: `v0.1.4`）で GitHub Release を作成して Publish
+3. Actions の `Publish package to npm` が実行され、npm に公開
+
+> リリースタグは `vX.Y.Z` 形式を想定しています。  
+> ワークフロー内で `package.json` の `version` とタグを照合し、一致しない場合は失敗します。
+
+### 配布タグ（dist-tag）
+
+- 通常リリース: `latest`
+- Prerelease として公開した Release: `next`
