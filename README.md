@@ -50,7 +50,7 @@ microcms-cli gen-types blog --all
 
 # CIなどで環境変数をインライン指定
 MICROCMS_SERVICE_DOMAIN=your-service-id \
-MICROCMS_MANAGEMENT_API_KEY=your-management-api-key \
+MICROCMS_API_KEY=your-management-api-key \
 microcms-cli gen-types blog
 ```
 
@@ -59,7 +59,7 @@ microcms-cli gen-types blog
 - `-o, --output <path>`: 出力先（ディレクトリ指定時は `<path>/microcms.d.ts`、デフォルト `./types/microcms.d.ts`）
 - `--all`: 全エンドポイントの型を生成
 - `--service-domain <domain>`: `MICROCMS_SERVICE_DOMAIN` をCLI引数で上書き
-- `--api-key <key>`: `MICROCMS_MANAGEMENT_API_KEY` をCLI引数で上書き
+- `--api-key <key>`: `MICROCMS_API_KEY` をCLI引数で上書き
 
 #### Required environment variables
 
@@ -69,12 +69,12 @@ CLI引数で指定しない場合、以下の環境変数が必要です。
 
 ```bash
 MICROCMS_SERVICE_DOMAIN=your-service-id
-MICROCMS_MANAGEMENT_API_KEY=your-management-api-key
+MICROCMS_API_KEY=your-management-api-key
 ```
 
 #### Required Management API permission
 
-`MICROCMS_MANAGEMENT_API_KEY` には、マネジメントAPIのGET権限として **「API情報の取得」** が必要です。
+`MICROCMS_API_KEY` には、マネジメントAPIのGET権限として **「API情報の取得」** が必要です。
 
 > 補足: 単一 endpoint で `apiType` が取得できない場合、CLI は警告を出して LIST として型生成します。
 

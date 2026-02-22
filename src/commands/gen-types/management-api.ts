@@ -32,7 +32,7 @@ async function fetchFromManagementApi(
     const responseBody = await response.text();
     if (response.status === 401) {
       throw new Error(
-        `Management API authentication failed (401). Check MICROCMS_MANAGEMENT_API_KEY. ${responseBody}`,
+        `Management API authentication failed (401). Check MICROCMS_API_KEY. ${responseBody}`,
       );
     }
     if (response.status === 403) {
