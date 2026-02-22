@@ -10,7 +10,7 @@ const FIXTURE_CONFIG: ManagementClientConfig = {
 const ORIGINAL_FETCH = globalThis.fetch;
 
 function setMockFetch(
-  implementation: (input: RequestInfo | URL, init?: RequestInit) => Promise<Response>,
+  implementation: (...args: Parameters<typeof fetch>) => ReturnType<typeof fetch>,
 ): void {
   globalThis.fetch = implementation as typeof fetch;
 }
