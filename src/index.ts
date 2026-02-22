@@ -23,10 +23,7 @@ import { genTypesCommand } from './commands/gen-types/index.js';
 
 const program = new Command();
 
-program
-  .name('microcms')
-  .description('CLI for microCMS')
-  .version('0.1.4');
+program.name('microcms').description('CLI for microCMS').version('0.1.4');
 
 program
   .command('generate:types [endpointId]')
@@ -39,14 +36,19 @@ program
   .option('--all', 'Generate types for all endpoints')
   .option('--service-domain <domain>', 'Override MICROCMS_SERVICE_DOMAIN')
   .option('--api-key <key>', 'Override MICROCMS_API_KEY')
-  .action(async (endpointId: string | undefined, options: {
-    output?: string;
-    all?: boolean;
-    serviceDomain?: string;
-    apiKey?: string;
-  }) => {
-    await genTypesCommand(endpointId, options);
-  });
+  .action(
+    async (
+      endpointId: string | undefined,
+      options: {
+        output?: string;
+        all?: boolean;
+        serviceDomain?: string;
+        apiKey?: string;
+      },
+    ) => {
+      await genTypesCommand(endpointId, options);
+    },
+  );
 
 // Show help if no command is provided
 if (process.argv.length === 2) {
