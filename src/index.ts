@@ -30,7 +30,6 @@ program
 
 program
   .command('generate:types [endpointId]')
-  .alias('gen-types')
   .description('Fetch API schema from microCMS Management API and generate TypeScript types')
   .option(
     '-o, --output <path>',
