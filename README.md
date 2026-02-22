@@ -80,13 +80,22 @@ MICROCMS_API_KEY=your-management-api-key
 
 ## Development
 
+開発ツール（Node.js / Bun）は `mise.toml` でバージョン固定しています。  
+最初に `mise install` を実行してから開発コマンドを実行してください。
+
 ```bash
+# ツールチェインを mise.toml から導入
+mise install
+
 bun install
 bun run build
 bun run typecheck
 bun run test
 bun run lint
 bun run format:check
+
+# シェルに反映されない場合の実行例
+mise exec -- bun run build
 
 # 自動修正
 bun run lint:fix
