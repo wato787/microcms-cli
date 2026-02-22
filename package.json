@@ -43,6 +43,10 @@
     "typescript",
     "mcp"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wato787/microcms-cli.git"
+  },
   "publishConfig": {
     "access": "public"
   }
