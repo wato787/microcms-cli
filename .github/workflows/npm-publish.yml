@@ -1,8 +1,3 @@
-# npm Trusted Publishing (OIDC) を使用して公開します。
-# 初回前に npm で Trusted Publisher を登録してください:
-# https://www.npmjs.com/package/@wato787/microcms-cli/access → Trusted Publishers
-# ワークフロー名は "npm-publish.yml" で登録すること。
-
 name: Publish package to npm
 
 on:
@@ -58,10 +53,5 @@ jobs:
       - name: Build package
         run: bun run build
 
-      - name: Publish prerelease with next dist-tag
-        if: ${{ github.event.release.prerelease }}
-        run: npm publish --provenance --tag next
-
-      - name: Publish release with latest dist-tag
-        if: ${{ !github.event.release.prerelease }}
+      - name: Publish to npm
         run: npm publish --provenance

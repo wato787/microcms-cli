@@ -26,7 +26,7 @@ const program = new Command();
 program
   .name('microcms')
   .description('CLI for microCMS')
-  .version('0.1.2');
+  .version('0.1.4');
 
 program
   .command('generate:types [endpointId]')
