@@ -85,6 +85,12 @@ bun install
 bun run build
 bun run typecheck
 bun run test
+bun run lint
+bun run format:check
+
+# 自動修正
+bun run lint:fix
+bun run format
 
 # 事前ビルド済み CLI を実行
 bun run start -- generate:types blog
