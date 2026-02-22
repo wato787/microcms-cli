@@ -116,7 +116,7 @@ function resolveFieldType(field: ManagementApiField, context: GenerationContext)
     case 'file':
       return 'MicroCMSFile';
     case 'relation':
-      return 'MicroCMSContentId';
+      return field.referencedApiEndpoint ? `${toPascalCase(field.referencedApiEndpoint)}Content` : 'MicroCMSContentId';
     case 'relationList':
       return 'MicroCMSContentId[]';
     case 'select':

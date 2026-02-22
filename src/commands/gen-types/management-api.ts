@@ -64,6 +64,7 @@ function parseApiField(rawField: unknown): ManagementApiField | null {
     kind,
     required: toBooleanValue(rawField.required) ?? false,
     multipleSelect: toBooleanValue(rawField.multipleSelect) ?? false,
+    referencedApiEndpoint: toStringValue(rawField.referencedApiEndpoint),
     customFieldCreatedAt: toStringValue(rawField.customFieldCreatedAt),
     customFieldCreatedAtList: toStringArray(rawField.customFieldCreatedAtList),
   };
