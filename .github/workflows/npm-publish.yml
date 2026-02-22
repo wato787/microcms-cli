@@ -24,6 +24,11 @@ jobs:
           node-version: "22"
           registry-url: https://registry.npmjs.org
 
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
       - name: Validate release tag against package version
         env:
           TAG_NAME: ${{ github.event.release.tag_name }}
@@ -39,11 +44,11 @@ jobs:
             exit 1
           fi
 
-      - name: Install dependencies
-        run: npm install
+      - name: Install dependencies with Bun lockfile
+        run: bun install --frozen-lockfile
 
       - name: Build package
-        run: npm run build
+        run: bun run build
 
       - name: Publish prerelease with next dist-tag
         if: ${{ github.event.release.prerelease }}

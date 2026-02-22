@@ -115,6 +115,7 @@ GitHub リポジトリの `Settings > Secrets and variables > Actions` に以下
 
 > リリースタグは `vX.Y.Z` 形式を想定しています。  
 > ワークフロー内で `package.json` の `version` とタグを照合し、一致しない場合は失敗します。
+> 依存インストールとビルドは Bun ベース（`bun install --frozen-lockfile` / `bun run build`）で実行します。
 
 ### 配布タグ（dist-tag）
 
