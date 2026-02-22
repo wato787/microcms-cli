@@ -18,19 +18,17 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - name: Setup mise and install toolchain
+        uses: jdx/mise-action@v2
         with:
-          node-version: "22"
-          registry-url: "https://registry.npmjs.org"
+          install: true
+          cache: true
 
-      - name: Ensure npm supports Trusted Publishing
-        run: npm install -g npm@latest
-
-      - name: Setup Bun
-        uses: oven-sh/setup-bun@v2
-        with:
-          bun-version: latest
+      - name: Show tool versions
+        run: |
+          node --version
+          npm --version
+          bun --version
 
       - name: Validate release tag against package version
         env:
