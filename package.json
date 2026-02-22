@@ -6,7 +6,7 @@
   "main": "dist/index.js",
   "type": "module",
   "bin": {
-    "microcms-cli": "dist/index.js"
+    "microcms": "dist/index.js"
   },
   "files": [
     "dist",
@@ -19,7 +19,7 @@
     "start": "node dist/index.js",
     "test": "bun test",
     "typecheck": "tsgo --noEmit",
-    "compile": "bun build ./src/index.ts --compile --outfile microcms-cli",
+    "compile": "bun build ./src/index.ts --compile --outfile microcms",
     "prepack": "npm run build"
   },
   "dependencies": {
