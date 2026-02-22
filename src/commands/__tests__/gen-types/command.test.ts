@@ -1,12 +1,12 @@
 import { describe, expect, it } from 'bun:test';
-import { createGenTypesCommand } from './command.js';
+import { createGenTypesCommand } from '../../gen-types/command.js';
 import type {
   ApiListItem,
   GenerationTarget,
   GenTypesOptions,
   ManagementApiSchema,
   ManagementClientConfig,
-} from './types.js';
+} from '../../gen-types/types.js';
 
 const FIXTURE_CONFIG: ManagementClientConfig = {
   serviceDomain: 'test-service',
@@ -43,11 +43,16 @@ function createHarness(
     log: [] as string[],
     error: [] as unknown[][],
     exit: [] as number[],
+    resolveOutputArgs: [] as Array<string | undefined>,
   };
 
   const command = createGenTypesCommand({
     resolveOutputFilePath:
-      overrides.resolveOutputFilePath ?? (() => '/tmp/generated/microcms.d.ts'),
+      overrides.resolveOutputFilePath ??
+      ((outputOption?: string) => {
+        calls.resolveOutputArgs.push(outputOption);
+        return '/tmp/generated/microcms.d.ts';
+      }),
     resolveConfig: overrides.resolveConfig ?? (() => FIXTURE_CONFIG),
     resolveSingleEndpoint:
       overrides.resolveSingleEndpoint ??
@@ -209,6 +214,50 @@ describe('genTypesCommand', () => {
       apiType: undefined,
     });
     expect(calls.exit).toEqual([]);
+  });
+
+  it('--all で endpoint が 0 件ならエラーを出して終了する', async () => {
+    const { command, calls } = createHarness({
+      fetchApiList: async () => [],
+    });
+
+    await command(undefined, { all: true });
+
+    expect(calls.error).toEqual([['Error:', 'No endpoints found from Management API.']]);
+    expect(calls.exit).toEqual([1]);
+    expect(calls.write).toEqual([]);
+    expect(calls.log).toEqual([]);
+  });
+
+  it('output オプションを解決関数へ渡し、出力先ディレクトリを再帰作成する', async () => {
+    const { command, calls } = createHarness({
+      resolveOutputFilePath: (outputOption?: string) => {
+        calls.resolveOutputArgs.push(outputOption);
+        return '/tmp/generated/custom/microcms.d.ts';
+      },
+      fetchApiSchema: async (_config: ManagementClientConfig, endpointId: string) =>
+        createSchema({
+          apiEndpoint: endpointId,
+          apiType: 'OBJECT',
+        }),
+    });
+
+    await command('blog', { output: './my-types' });
+
+    expect(calls.resolveOutputArgs).toEqual(['./my-types']);
+    expect(calls.mkdir).toEqual([
+      {
+        targetPath: '/tmp/generated/custom',
+        options: { recursive: true },
+      },
+    ]);
+    expect(calls.write).toEqual([
+      {
+        filePath: '/tmp/generated/custom/microcms.d.ts',
+        source: '// generated definitions',
+        encoding: 'utf-8',
+      },
+    ]);
   });
 
   it('例外発生時はエラーを出力して exit(1) する', async () => {
