@@ -15,6 +15,23 @@ function setMockFetch(
   globalThis.fetch = implementation as typeof fetch;
 }
 
+function resolveRequestContext(
+  input: Parameters<typeof fetch>[0],
+  init?: Parameters<typeof fetch>[1],
+): { url: string; headers: Headers } {
+  if (input instanceof Request) {
+    return {
+      url: input.url,
+      headers: new Headers(init?.headers ?? input.headers),
+    };
+  }
+
+  return {
+    url: typeof input === 'string' ? input : input.toString(),
+    headers: new Headers(init?.headers),
+  };
+}
+
 afterEach(() => {
   globalThis.fetch = ORIGINAL_FETCH;
 });
@@ -25,9 +42,9 @@ describe('management-api', () => {
     let apiKeyHeader = '';
 
     setMockFetch(async (input, init) => {
-      const request = new Request(input, init);
-      requestedUrl = request.url;
-      apiKeyHeader = request.headers.get('X-MICROCMS-API-KEY') ?? '';
+      const { url, headers } = resolveRequestContext(input, init);
+      requestedUrl = url;
+      apiKeyHeader = headers.get('X-MICROCMS-API-KEY') ?? '';
 
       return new Response(
         JSON.stringify({
@@ -62,8 +79,8 @@ describe('management-api', () => {
     let requestedUrl = '';
 
     setMockFetch(async (input, init) => {
-      const request = new Request(input, init);
-      requestedUrl = request.url;
+      const { url } = resolveRequestContext(input, init);
+      requestedUrl = url;
 
       return new Response(
         JSON.stringify({
