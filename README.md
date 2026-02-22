@@ -1,9 +1,9 @@
 # microCMS CLI
 
-microCMS 用の CLI ツールです。実行コマンドは `microcms-cli` です。  
+microCMS 用の CLI ツールです。実行コマンドは `microcms` です。  
 npm 配布物は事前ビルド済みのため、実行時に Bun は不要です（Node.js 18+）。
 
-- `gen-types`: Management API のスキーマから TypeScript 型を生成
+- `generate:types`: Management API のスキーマから TypeScript 型を生成
 
 ## Install
 
@@ -15,12 +15,12 @@ bun add -g @wato787/microcms-cli
 
 ```bash
 # インストールせずに実行
-npx @wato787/microcms-cli gen-types blog
+npx @wato787/microcms-cli generate:types blog
 ```
 
 ## Commands
 
-### `gen-types [endpointId] [options]`
+### `generate:types [endpointId] [options]`
 
 microCMS Management API（`/api/v1/apis`）から API スキーマを取得し、TypeScript 型を生成します。
 生成結果は `microcms.d.ts` に集約されます。
@@ -34,24 +34,24 @@ microCMS Management API（`/api/v1/apis`）から API スキーマを取得し�
 
 ```bash
 # 単一エンドポイント
-microcms-cli gen-types blog
+microcms generate:types blog
 
 # 出力先ディレクトリ指定（デフォルトは ./types/microcms.d.ts）
-microcms-cli gen-types blog -o ./src/types/microcms
+microcms generate:types blog -o ./src/types/microcms
 # => ./src/types/microcms/microcms.d.ts
 
 # 出力ファイルを直接指定
-microcms-cli gen-types blog -o ./src/types/microcms.d.ts
+microcms generate:types blog -o ./src/types/microcms.d.ts
 
 # 全エンドポイントを一括生成
-microcms-cli gen-types --all
+microcms generate:types --all
 # endpointIdを渡しても --all 指定時は無視されます
-microcms-cli gen-types blog --all
+microcms generate:types blog --all
 
 # CIなどで環境変数をインライン指定
 MICROCMS_SERVICE_DOMAIN=your-service-id \
 MICROCMS_API_KEY=your-management-api-key \
-microcms-cli gen-types blog
+microcms generate:types blog
 ```
 
 #### Options
@@ -63,7 +63,7 @@ microcms-cli gen-types blog
 
 #### Required environment variables
 
-`gen-types` は **実行した利用者の環境変数** から設定を読み取ります。  
+`generate:types` は **実行した利用者の環境変数** から設定を読み取ります。  
 カレントディレクトリの `.env` と `.env.local` を自動で読み込みます（`.env.local` は後から読み込むため、同名の変数を上書きします）。[dotenv](https://github.com/motdotla/dotenv) 使用。  
 CLI引数で指定しない場合、以下の環境変数が必要です。
 
@@ -82,15 +82,15 @@ MICROCMS_API_KEY=your-management-api-key
 
 ```bash
 bun install
-npm run build
+bun run build
 bun run typecheck
 bun run test
 
 # 事前ビルド済み CLI を実行
-npm run start -- gen-types blog
+bun run start -- generate:types blog
 
 # ソースから実行（Bun）
-bun run dev gen-types blog
+bun run dev generate:types blog
 
 # 単一バイナリを生成
 bun run compile

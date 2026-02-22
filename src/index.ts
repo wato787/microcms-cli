@@ -24,12 +24,12 @@ import { genTypesCommand } from './commands/gen-types/index.js';
 const program = new Command();
 
 program
-  .name('microcms-cli')
+  .name('microcms')
   .description('CLI for microCMS')
   .version('0.1.2');
 
 program
-  .command('gen-types [endpointId]')
+  .command('generate:types [endpointId]')
   .description('Fetch API schema from microCMS Management API and generate TypeScript types')
   .option(
     '-o, --output <path>',
