@@ -57,6 +57,73 @@ describe('renderDefinitionsFile', () => {
     expect(source).not.toContain('SettingsListResponse');
   });
 
+  it('select フィールドは multipleSelect に関わらず常に string[] を生成する', () => {
+    const source = renderDefinitionsFile([
+      createTarget('product', {
+        apiType: 'LIST',
+        schema: createSchema({
+          apiFields: [
+            { fieldId: 'category', kind: 'select', required: true, multipleSelect: false },
+            { fieldId: 'tags', kind: 'select', required: false, multipleSelect: true },
+          ],
+        }),
+      }),
+    ]);
+
+    expect(source).toContain('category: string[];');
+    expect(source).toContain('tags?: string[];');
+    expect(source).not.toMatch(/category: string;/);
+  });
+
+  it('select フィールドに selectItems がある場合、文字列リテラルユニオンの配列型を生成する', () => {
+    const source = renderDefinitionsFile([
+      createTarget('product', {
+        apiType: 'LIST',
+        schema: createSchema({
+          apiFields: [
+            {
+              fieldId: 'size',
+              kind: 'select',
+              required: true,
+              multipleSelect: false,
+              selectItems: ['S', 'M', 'L', 'XL'],
+            },
+          ],
+        }),
+      }),
+    ]);
+
+    expect(source).toContain('size: ("S" | "M" | "L" | "XL")[];');
+  });
+
+  it('relationList フィールドは参照先エンドポイントの Content 型を配列で生成する', () => {
+    const source = renderDefinitionsFile([
+      createTarget('article', {
+        apiType: 'LIST',
+        schema: createSchema({
+          apiFields: [
+            {
+              fieldId: 'relatedPosts',
+              kind: 'relationList',
+              required: false,
+              multipleSelect: false,
+              referencedApiEndpoint: 'blog',
+            },
+            {
+              fieldId: 'authors',
+              kind: 'relationList',
+              required: true,
+              multipleSelect: false,
+            },
+          ],
+        }),
+      }),
+    ]);
+
+    expect(source).toContain('relatedPosts?: BlogContent[];');
+    expect(source).toContain('authors: MicroCMSContentId[];');
+  });
+
   it('custom/repeater の不正・未知データを安全にフォールバックして型生成する', () => {
     const source = renderDefinitionsFile([
       createTarget('page', {
