@@ -4,6 +4,7 @@ import type {
   ApiListItem,
   GenerationTarget,
   GenTypesOptions,
+  ManagementApiSchema,
   ManagementClientConfig,
 } from '../types.js';
 import { createSchema } from './helpers.js';
