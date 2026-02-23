@@ -1,12 +1,12 @@
 import { describe, expect, it } from 'bun:test';
-import { createGenTypesCommand } from '../../gen-types/command.js';
+import { createGenTypesCommand } from '../command.js';
 import type {
   ApiListItem,
   GenerationTarget,
   GenTypesOptions,
   ManagementApiSchema,
   ManagementClientConfig,
-} from '../../gen-types/types.js';
+} from '../types.js';
 
 const FIXTURE_CONFIG: ManagementClientConfig = {
   serviceDomain: 'test-service',

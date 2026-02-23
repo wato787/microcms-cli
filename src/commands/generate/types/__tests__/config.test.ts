@@ -1,6 +1,6 @@
 import path from 'node:path';
 import { afterEach, describe, expect, it } from 'bun:test';
-import { resolveConfig, resolveOutputFilePath, resolveSingleEndpoint } from '../../gen-types/config.js';
+import { resolveConfig, resolveOutputFilePath, resolveSingleEndpoint } from '../config.js';
 
 const ORIGINAL_ENV = {
   serviceDomain: process.env.MICROCMS_SERVICE_DOMAIN,

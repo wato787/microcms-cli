@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'bun:test';
-import { renderDefinitionsFile } from '../../gen-types/type-generator.js';
-import type { GenerationTarget, ManagementApiSchema } from '../../gen-types/types.js';
+import { renderDefinitionsFile } from '../type-generator.js';
+import type { GenerationTarget, ManagementApiSchema } from '../types.js';
 
 function createSchema(overrides: Partial<ManagementApiSchema> = {}): ManagementApiSchema {
   return {
