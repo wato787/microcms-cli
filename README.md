@@ -67,8 +67,6 @@ microcms generate:types blog
 カレントディレクトリの `.env` と `.env.local` を自動で読み込みます（`.env.local` は後から読み込むため、同名の変数を上書きします）。[dotenv](https://github.com/motdotla/dotenv) 使用。  
 CLI引数で指定しない場合、以下の環境変数が必要です。
 
-`.env.example` をコピーして `.env` を作成しておくとスムーズです。
-
 ```bash
 MICROCMS_SERVICE_DOMAIN=your-service-id
 MICROCMS_API_KEY=your-management-api-key
