@@ -1,6 +1,6 @@
 import path from 'node:path';
 import { DEFAULT_OUTPUT_FILE_NAME, DEFAULT_OUTPUT_PATH } from './constants.js';
-import { toStringValue } from './shared.js';
+import { toStringValue } from '../../../utils/index.js';
 import type { GenTypesOptions, ManagementClientConfig } from './types.js';
 
 function isDeclarationFilePath(filePath: string): boolean {
@@ -18,27 +18,30 @@ export function resolveOutputFilePath(outputOption?: string): string {
   return path.join(resolvedPath, DEFAULT_OUTPUT_FILE_NAME);
 }
 
+function resolveRequiredConfig(
+  optionValue: string | undefined,
+  envKey: string,
+  cliFlag: string,
+): string {
+  const value = toStringValue(optionValue) ?? toStringValue(process.env[envKey]);
+  if (value) return value;
+
+  const envDir = process.env.__MICROCMS_CLI_ENV_DIR ?? process.cwd();
+  throw new Error(
+    `${envKey} is required. You can also pass ${cliFlag}.\n` +
+      `(Searched for .env / .env.local in: ${envDir}. CWD: ${process.cwd()})`,
+  );
+}
+
 export function resolveConfig(options: GenTypesOptions): ManagementClientConfig {
-  const serviceDomain =
-    toStringValue(options.serviceDomain) ?? toStringValue(process.env.MICROCMS_SERVICE_DOMAIN);
-  if (!serviceDomain) {
-    const envDir = process.env.__MICROCMS_CLI_ENV_DIR ?? process.cwd();
-    throw new Error(
-      'MICROCMS_SERVICE_DOMAIN is required. You can also pass --service-domain.\n' +
-        `(Searched for .env / .env.local in: ${envDir}. CWD: ${process.cwd()})`,
-    );
-  }
-
-  const apiKey = toStringValue(options.apiKey) ?? toStringValue(process.env.MICROCMS_API_KEY);
-  if (!apiKey) {
-    const envDir = process.env.__MICROCMS_CLI_ENV_DIR ?? process.cwd();
-    throw new Error(
-      'MICROCMS_API_KEY is required. You can also pass --api-key.\n' +
-        `(Searched for .env / .env.local in: ${envDir}. CWD: ${process.cwd()})`,
-    );
-  }
-
-  return { serviceDomain, apiKey };
+  return {
+    serviceDomain: resolveRequiredConfig(
+      options.serviceDomain,
+      'MICROCMS_SERVICE_DOMAIN',
+      '--service-domain',
+    ),
+    apiKey: resolveRequiredConfig(options.apiKey, 'MICROCMS_API_KEY', '--api-key'),
+  };
 }
 
 export function resolveSingleEndpoint(endpointId: string | undefined): string {
