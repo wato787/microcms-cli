@@ -23,7 +23,7 @@ import { genTypesCommand } from './commands/generate/types/index.js';
 
 const program = new Command();
 
-program.name('microcms').description('CLI for microCMS').version('0.1.4');
+program.name('microcms').description('CLI for microCMS').version('0.1.5');
 
 program
   .command('generate:types [endpointId]')
