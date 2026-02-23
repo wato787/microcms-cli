@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it } from 'bun:test';
-import { fetchApiList, fetchApiSchema } from '../../gen-types/management-api.js';
-import type { ManagementClientConfig } from '../../gen-types/types.js';
+import { fetchApiList, fetchApiSchema } from '../management-api.js';
+import type { ManagementClientConfig } from '../types.js';
 
 const FIXTURE_CONFIG: ManagementClientConfig = {
   serviceDomain: 'sample',

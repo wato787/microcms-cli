@@ -19,7 +19,7 @@ dotenv.config({ path: path.join(envDir, '.env.local') });
 process.env.__MICROCMS_CLI_ENV_DIR = envDir;
 
 import { Command } from 'commander';
-import { genTypesCommand } from './commands/gen-types/index.js';
+import { genTypesCommand } from './commands/generate/types/index.js';
 
 const program = new Command();
 
