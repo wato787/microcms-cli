@@ -106,10 +106,12 @@ function resolveFieldType(field: ManagementApiField, context: GenerationContext)
       return 'MicroCMSImage[]';
     case 'file':
       return 'MicroCMSFile';
-    case 'relation':
-      return field.referencedApiEndpoint
+    case 'relation': {
+      const refType = field.referencedApiEndpoint
         ? `${toPascalCase(field.referencedApiEndpoint)}Content`
         : 'MicroCMSContentId';
+      return `${refType} | null`;
+    }
     case 'relationList':
       return field.referencedApiEndpoint
         ? `${toPascalCase(field.referencedApiEndpoint)}Content[]`
