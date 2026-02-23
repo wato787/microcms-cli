@@ -1,8 +1,8 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { toErrorMessage } from '../../../utils/index.js';
 import { resolveConfig, resolveOutputFilePath, resolveSingleEndpoint } from './config.js';
 import { fetchApiList, fetchApiSchema } from './management-api.js';
-import { toErrorMessage } from './shared.js';
 import { renderDefinitionsFile } from './type-generator.js';
 import type {
   ApiListItem,

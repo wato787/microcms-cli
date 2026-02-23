@@ -4,22 +4,14 @@ import type {
   ApiListItem,
   GenerationTarget,
   GenTypesOptions,
-  ManagementApiSchema,
   ManagementClientConfig,
 } from '../types.js';
+import { createSchema } from './helpers.js';
 
 const FIXTURE_CONFIG: ManagementClientConfig = {
   serviceDomain: 'test-service',
   apiKey: 'test-key',
 };
-
-function createSchema(overrides: Partial<ManagementApiSchema> = {}): ManagementApiSchema {
-  return {
-    apiFields: [],
-    customFields: [],
-    ...overrides,
-  };
-}
 
 function createHarness(
   overrides: {

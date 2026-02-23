@@ -1,4 +1,4 @@
-import { toPascalCase, toTypePropertyName } from './shared.js';
+import { getUniqueName, toPascalCase, toTypePropertyName } from '../../../utils/index.js';
 import type { GenerationTarget, ManagementApiField, ManagementCustomField } from './types.js';
 
 interface GenerationContext {
@@ -13,19 +13,6 @@ interface GenerationContext {
 
 export function normalizeApiType(apiType?: string): 'LIST' | 'OBJECT' {
   return apiType?.toUpperCase() === 'OBJECT' ? 'OBJECT' : 'LIST';
-}
-
-function getUniqueName(baseName: string, usedNames: Set<string>): string {
-  let candidate = baseName;
-  let suffix = 2;
-
-  while (usedNames.has(candidate)) {
-    candidate = `${baseName}${suffix}`;
-    suffix += 1;
-  }
-
-  usedNames.add(candidate);
-  return candidate;
 }
 
 function getUniqueTypeName(baseName: string, context: GenerationContext): string {

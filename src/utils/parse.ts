@@ -26,18 +26,7 @@ export function toStringArray(value: unknown): string[] | undefined {
   return values.length > 0 ? values : undefined;
 }
 
-export function toPascalCase(value: string): string {
-  const chunks = value.split(/[^A-Za-z0-9]+/).filter((chunk) => chunk.length > 0);
-  const raw = chunks.map((chunk) => `${chunk.charAt(0).toUpperCase()}${chunk.slice(1)}`).join('');
-
-  const safe = raw.length > 0 ? raw : 'Generated';
-  return /^[A-Za-z_$]/.test(safe) ? safe : `T${safe}`;
-}
-
-export function toTypePropertyName(value: string): string {
-  return /^[A-Za-z_$][A-Za-z0-9_$]*$/.test(value) ? value : JSON.stringify(value);
-}
-
-export function toErrorMessage(error: unknown): string {
-  return error instanceof Error ? error.message : String(error);
+export function parseArray<T>(rawArray: unknown, parser: (item: unknown) => T | null): T[] {
+  if (!Array.isArray(rawArray)) return [];
+  return rawArray.map(parser).filter((item): item is T => item !== null);
 }

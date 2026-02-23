@@ -1,25 +1,6 @@
 import { describe, expect, it } from 'bun:test';
 import { renderDefinitionsFile } from '../type-generator.js';
-import type { GenerationTarget, ManagementApiSchema } from '../types.js';
-
-function createSchema(overrides: Partial<ManagementApiSchema> = {}): ManagementApiSchema {
-  return {
-    apiFields: [],
-    customFields: [],
-    ...overrides,
-  };
-}
-
-function createTarget(
-  endpoint: string,
-  overrides: Partial<GenerationTarget> = {},
-): GenerationTarget {
-  return {
-    endpoint,
-    schema: createSchema(),
-    ...overrides,
-  };
-}
+import { createSchema, createTarget } from './helpers.js';
 
 describe('renderDefinitionsFile', () => {
   it('endpoint 名の PascalCase が衝突しても型名を一意化する', () => {

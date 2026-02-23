@@ -1,5 +1,5 @@
 import { MANAGEMENT_API_BASE_DOMAIN } from './constants.js';
-import { isRecord, toBooleanValue, toStringArray, toStringValue } from './shared.js';
+import { isRecord, parseArray, toBooleanValue, toStringArray, toStringValue } from '../../../utils/index.js';
 import type {
   ApiListItem,
   ManagementApiField,
@@ -90,12 +90,6 @@ function parseCustomField(rawCustomField: unknown): ManagementCustomField | null
 
   const createdAt = toStringValue(rawCustomField.createdAt);
   const fieldId = toStringValue(rawCustomField.fieldId);
-  const fields = Array.isArray(rawCustomField.fields)
-    ? rawCustomField.fields
-        .map((field) => parseApiField(field))
-        .filter((field): field is ManagementApiField => field !== null)
-    : [];
-
   if (!createdAt || !fieldId) {
     return null;
   }
@@ -103,7 +97,7 @@ function parseCustomField(rawCustomField: unknown): ManagementCustomField | null
   return {
     createdAt,
     fieldId,
-    fields,
+    fields: parseArray(rawCustomField.fields, parseApiField),
   };
 }
 
@@ -112,21 +106,9 @@ function parseApiSchema(rawSchema: unknown): ManagementApiSchema {
     throw new Error('Management API schema response is invalid.');
   }
 
-  const apiFields = Array.isArray(rawSchema.apiFields)
-    ? rawSchema.apiFields
-        .map((field) => parseApiField(field))
-        .filter((field): field is ManagementApiField => field !== null)
-    : [];
-
-  const customFields = Array.isArray(rawSchema.customFields)
-    ? rawSchema.customFields
-        .map((field) => parseCustomField(field))
-        .filter((field): field is ManagementCustomField => field !== null)
-    : [];
-
   return {
-    apiFields,
-    customFields,
+    apiFields: parseArray(rawSchema.apiFields, parseApiField),
+    customFields: parseArray(rawSchema.customFields, parseCustomField),
     apiType: toStringValue(rawSchema.apiType),
     apiEndpoint: toStringValue(rawSchema.apiEndpoint),
     apiName: toStringValue(rawSchema.apiName),
@@ -165,9 +147,7 @@ function parseApiList(rawResponse: unknown): ApiListItem[] {
   }
 
   for (const items of candidateArrays) {
-    const parsedItems = items
-      .map((item) => parseApiListItem(item))
-      .filter((item): item is ApiListItem => item !== null);
+    const parsedItems = parseArray(items, parseApiListItem);
     if (parsedItems.length > 0) {
       return parsedItems;
     }
