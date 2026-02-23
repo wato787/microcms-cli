@@ -106,14 +106,23 @@ function resolveFieldType(field: ManagementApiField, context: GenerationContext)
       return 'MicroCMSImage[]';
     case 'file':
       return 'MicroCMSFile';
-    case 'relation':
-      return field.referencedApiEndpoint
+    case 'relation': {
+      const refType = field.referencedApiEndpoint
         ? `${toPascalCase(field.referencedApiEndpoint)}Content`
         : 'MicroCMSContentId';
+      return `${refType} | null`;
+    }
     case 'relationList':
-      return 'MicroCMSContentId[]';
-    case 'select':
-      return field.multipleSelect ? 'string[]' : 'string';
+      return field.referencedApiEndpoint
+        ? `${toPascalCase(field.referencedApiEndpoint)}Content[]`
+        : 'MicroCMSContentId[]';
+    case 'select': {
+      if (field.selectItems && field.selectItems.length > 0) {
+        const union = field.selectItems.map((item) => JSON.stringify(item)).join(' | ');
+        return `(${union})[]`;
+      }
+      return 'string[]';
+    }
     case 'iframe':
     case 'extension':
       return 'Record<string, unknown>';

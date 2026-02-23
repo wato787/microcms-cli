@@ -40,6 +40,26 @@ async function fetchFromManagementApi(url: string, apiKey: string): Promise<unkn
   return response.json();
 }
 
+function parseSelectItems(rawItems: unknown): string[] | undefined {
+  if (!Array.isArray(rawItems) || rawItems.length === 0) {
+    return undefined;
+  }
+
+  const values = rawItems
+    .map((item) => {
+      if (typeof item === 'string') {
+        return item;
+      }
+      if (isRecord(item) && typeof item.value === 'string') {
+        return item.value;
+      }
+      return undefined;
+    })
+    .filter((item): item is string => item !== undefined);
+
+  return values.length > 0 ? values : undefined;
+}
+
 function parseApiField(rawField: unknown): ManagementApiField | null {
   if (!isRecord(rawField)) {
     return null;
@@ -59,6 +79,7 @@ function parseApiField(rawField: unknown): ManagementApiField | null {
     referencedApiEndpoint: toStringValue(rawField.referencedApiEndpoint),
     customFieldCreatedAt: toStringValue(rawField.customFieldCreatedAt),
     customFieldCreatedAtList: toStringArray(rawField.customFieldCreatedAtList),
+    selectItems: parseSelectItems(rawField.selectItems),
   };
 }
 

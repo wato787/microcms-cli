@@ -126,6 +126,7 @@ describe('management-api', () => {
         referencedApiEndpoint: undefined,
         customFieldCreatedAt: undefined,
         customFieldCreatedAtList: undefined,
+        selectItems: undefined,
       },
       {
         fieldId: 'related',
@@ -135,6 +136,7 @@ describe('management-api', () => {
         referencedApiEndpoint: 'articles',
         customFieldCreatedAt: undefined,
         customFieldCreatedAtList: undefined,
+        selectItems: undefined,
       },
     ]);
     expect(schema.customFields).toEqual([
@@ -150,10 +152,45 @@ describe('management-api', () => {
             referencedApiEndpoint: undefined,
             customFieldCreatedAt: undefined,
             customFieldCreatedAtList: undefined,
+            selectItems: undefined,
           },
         ],
       },
     ]);
+  });
+
+  it('fetchApiSchema は selectItems を文字列配列/オブジェクト配列の両形式でパースする', async () => {
+    setMockFetch(async () => {
+      return new Response(
+        JSON.stringify({
+          apiEndpoint: 'product',
+          apiType: 'LIST',
+          apiFields: [
+            {
+              fieldId: 'color',
+              kind: 'select',
+              required: true,
+              multipleSelect: false,
+              selectItems: ['Red', 'Blue', 'Green'],
+            },
+            {
+              fieldId: 'size',
+              kind: 'select',
+              required: false,
+              multipleSelect: true,
+              selectItems: [{ value: 'S' }, { value: 'M' }, { value: 'L' }],
+            },
+          ],
+          customFields: [],
+        }),
+        { status: 200, headers: { 'content-type': 'application/json' } },
+      );
+    });
+
+    const schema = await fetchApiSchema(FIXTURE_CONFIG, 'product');
+
+    expect(schema.apiFields[0]?.selectItems).toEqual(['Red', 'Blue', 'Green']);
+    expect(schema.apiFields[1]?.selectItems).toEqual(['S', 'M', 'L']);
   });
 
   it('401 応答時は API キー向けの専用エラーメッセージを返す', async () => {

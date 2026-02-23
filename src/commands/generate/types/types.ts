@@ -24,6 +24,7 @@ export interface ManagementApiField {
   referencedApiEndpoint?: string;
   customFieldCreatedAt?: string;
   customFieldCreatedAtList?: string[];
+  selectItems?: string[];
 }
 
 export interface ManagementCustomField {
