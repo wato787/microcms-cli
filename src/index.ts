@@ -1,8 +1,12 @@
 #!/usr/bin/env node
 
 import fs from 'node:fs';
+import { createRequire } from 'node:module';
 import path from 'node:path';
 import dotenv from 'dotenv';
+
+const { version } = createRequire(import.meta.url)('../package.json') as { version: string };
+console.log('version:', version);
 
 function findEnvDir(dir: string): string | null {
   const parent = path.dirname(dir);
@@ -23,7 +27,7 @@ import { genTypesCommand } from './commands/generate/types/index.js';
 
 const program = new Command();
 
-program.name('microcms').description('CLI for microCMS').version('0.1.5');
+program.name('microcms').description('CLI for microCMS').version(version);
 
 program
   .command('generate:types [endpointId]')
