@@ -6,7 +6,6 @@ import path from 'node:path';
 import dotenv from 'dotenv';
 
 const { version } = createRequire(import.meta.url)('../package.json') as { version: string };
-console.log('version:', version);
 
 function findEnvDir(dir: string): string | null {
   const parent = path.dirname(dir);
